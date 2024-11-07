@@ -4,7 +4,7 @@ import java.util.Optional;
 import store.domain.PurchaseInfos;
 import store.repository.SingleRepository;
 
-public class PurchaseInfoRepository implements SingleRepository<PurchaseInfos> {
+public class PurchaseInfosRepository implements SingleRepository<PurchaseInfos> {
 
     private PurchaseInfos purchaseInfos;
 

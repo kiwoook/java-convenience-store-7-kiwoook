@@ -11,9 +11,17 @@ public class Application {
     private static final PurchaseController purchaseController = StoreConfig.getPurchaseController();
 
     public static void main(String[] args) throws IOException {
-        storeController.init();
-        storeController.explain();
+        boolean isRetry = true;
 
-        purchaseController.buy();
+        while (isRetry) {
+            storeController.init();
+            storeController.explain();
+
+            purchaseController.buy();
+            purchaseController.check();
+            purchaseController.printReceipt();
+            isRetry = purchaseController.retry();
+        }
+
     }
 }

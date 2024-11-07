@@ -6,8 +6,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import store.dto.PurchaseConfirmDto;
 
 public class PurchaseInfo {
+
+    private static final int MIN_LENGTH = 5;
     private static final String OPEN_BRACKET = "[";
     private static final String CLOSE_BRACKET = "]";
     private static final String SEPARATOR = "-";
@@ -42,6 +45,12 @@ public class PurchaseInfo {
                         Long::sum));
 
         return purchaseCountMap;
+    }
+
+    public PurchaseConfirmDto toConfirmDto(Product product) {
+        Long requireQuantity = product.calculateRequiredQuantity(this.requestQuantity);
+
+        return PurchaseConfirmDto.create(this.productName, this.requestQuantity, requireQuantity);
     }
 
     public void validQuantity(Product product) {
@@ -99,7 +108,7 @@ public class PurchaseInfo {
     }
 
     private void validInput(String input) {
-        if (input == null || input.isBlank()) {
+        if (input == null || input.isBlank() || input.length() < MIN_LENGTH) {
             throw new IllegalArgumentException(INVALID_PURCHASE.getMessage());
         }
 

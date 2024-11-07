@@ -5,15 +5,29 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static store.enums.ErrorMessage.EXCEED_PURCHASE;
 import static store.enums.ErrorMessage.NOT_EXIST_PRODUCT;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import store.domain.Product;
 import store.domain.Stock;
-import store.repository.impl.ProductRepository;
-import store.repository.impl.PurchaseInfoRepository;
+import store.repository.impl.ProductMapRepository;
+import store.repository.impl.PurchaseInfosRepository;
+import store.repository.impl.PurchaseVerificationRepository;
 import store.service.impl.PurchaseServiceImpl;
 
 class PurchaseServiceTest {
+
+    private ProductMapRepository productRepository;
+    private PurchaseServiceImpl purchaseService;
+
+    @BeforeEach
+    void setUp() {
+        productRepository = new ProductMapRepository();
+        PurchaseInfosRepository purchaseInfosSingleRepository = new PurchaseInfosRepository();
+        PurchaseVerificationRepository purchaseVerificationRepository = new PurchaseVerificationRepository();
+        purchaseService = new PurchaseServiceImpl(purchaseInfosSingleRepository,
+                productRepository, purchaseVerificationRepository);
+    }
 
     @Test
     @DisplayName("해당 제품이 없으면 에러를 반환")
@@ -22,12 +36,7 @@ class PurchaseServiceTest {
         String productName = "제품2";
         Product product = new Product(productName, 1000, null);
 
-        ProductRepository productRepository = new ProductRepository();
         productRepository.save(productName, product);
-
-        PurchaseInfoRepository purchaseInfosSingleRepository = new PurchaseInfoRepository();
-
-        PurchaseServiceImpl purchaseService = new PurchaseServiceImpl(purchaseInfosSingleRepository, productRepository);
 
         // when
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
@@ -44,12 +53,7 @@ class PurchaseServiceTest {
         String productName = "제품1";
         Product product = new Product(productName, 1000, new Stock(), null);
 
-        ProductRepository productRepository = new ProductRepository();
         productRepository.save(productName, product);
-
-        PurchaseInfoRepository purchaseInfosSingleRepository = new PurchaseInfoRepository();
-
-        PurchaseServiceImpl purchaseService = new PurchaseServiceImpl(purchaseInfosSingleRepository, productRepository);
 
         // when
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
@@ -65,12 +69,7 @@ class PurchaseServiceTest {
         String productName = "제품1";
         Product product = new Product(productName, 1000, new Stock(5, 0), null);
 
-        ProductRepository productRepository = new ProductRepository();
         productRepository.save(productName, product);
-
-        PurchaseInfoRepository purchaseInfosSingleRepository = new PurchaseInfoRepository();
-
-        PurchaseServiceImpl purchaseService = new PurchaseServiceImpl(purchaseInfosSingleRepository, productRepository);
 
         // when
         purchaseService.create("[제품1-5]");
@@ -82,12 +81,7 @@ class PurchaseServiceTest {
         String productName = "제품1";
         Product product = new Product(productName, 1000, new Stock(0, 5), null);
 
-        ProductRepository productRepository = new ProductRepository();
         productRepository.save(productName, product);
-
-        PurchaseInfoRepository purchaseInfosSingleRepository = new PurchaseInfoRepository();
-
-        PurchaseServiceImpl purchaseService = new PurchaseServiceImpl(purchaseInfosSingleRepository, productRepository);
 
         // when
         purchaseService.create("[제품1-5]");

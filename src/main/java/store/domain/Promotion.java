@@ -6,6 +6,7 @@ import java.util.Objects;
 public class Promotion {
 
     private static final int ONE_DAY_OFFSET = 1;
+
     private final String name;
     private final long buyQuantity;
     private final long getQuantity;
@@ -27,6 +28,25 @@ public class Promotion {
     public boolean isValidPromotion(LocalDate currentDate) {
         return currentDate.isAfter(startDate.minusDays(ONE_DAY_OFFSET)) && currentDate.isBefore(
                 endDate.plusDays(ONE_DAY_OFFSET));
+    }
+
+    public long combinedQuantity() {
+        return buyQuantity + getQuantity;
+    }
+
+    protected Long totalBuyQuantity(Long promotionBundle) {
+        return promotionBundle * getQuantity;
+    }
+
+    protected Long totalGetQuantity(Long promotionBundle) {
+        return promotionBundle * buyQuantity;
+    }
+
+    protected Long getPromotionalGiftQuantity(Long requestQuantity) {
+        if ((requestQuantity + getQuantity) % combinedQuantity() == 0) {
+            return getQuantity;
+        }
+        return 0L;
     }
 
 

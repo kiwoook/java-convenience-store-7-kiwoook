@@ -7,7 +7,7 @@ import java.util.Optional;
 import store.domain.Product;
 import store.repository.MapRepository;
 
-public class ProductRepository implements MapRepository<Product> {
+public class ProductMapRepository implements MapRepository<Product> {
 
     private final Map<String, Product> database = new LinkedHashMap<>();
 

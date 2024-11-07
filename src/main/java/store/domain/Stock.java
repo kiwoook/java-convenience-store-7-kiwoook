@@ -45,6 +45,36 @@ public class Stock {
         return normalQuantity + COUNT_UNIT;
     }
 
+    public Long remainQuantity(Long requestQuantity, Promotion promotion) {
+        validRequestQuantity(requestQuantity);
+        if (promotion == null || promotionQuantity == 0) {
+            return 0L;
+        }
+
+        if (promotionQuantity < requestQuantity) {
+            return calculateNonPromotionQuantity(requestQuantity, promotion);
+        }
+
+        return promotion.getPromotionalGiftQuantity(requestQuantity);
+    }
+
+    private long calculateNonPromotionQuantity(Long requestQuantity, Promotion promotion) {
+        long availablePromoUnits = Math.min(requestQuantity, promotionQuantity);
+
+        long promotionBundle = availablePromoUnits / promotion.combinedQuantity();
+
+        long availablePromotionQuantity =
+                promotion.totalBuyQuantity(promotionBundle) + promotion.totalGetQuantity(promotionBundle);
+
+        return availablePromotionQuantity - requestQuantity;
+    }
+
+    private void validRequestQuantity(Long requestQuantity) {
+        if (requestQuantity > total()) {
+            throw new IllegalStateException();
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

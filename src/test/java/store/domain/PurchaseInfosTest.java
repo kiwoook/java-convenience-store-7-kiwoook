@@ -18,6 +18,7 @@ class PurchaseInfosTest {
     @ValueSource(strings = {"[콜라-10][사이다-3]", "[-10],[사이다-3]", "[콜라-10],[사이다-3],",
             "[콜라-10],[사이다-3],", "콜라-10,사이다-3", "[콜라-10,사이다-3]",
             "[콜라,사이다-3]", "[콜라-10], 사이다-3", "[콜라-10], [사이다-3]",
+            "[]", "[-]", "[-],[-]", "-","[,,,,,,]"
     })
     void test1(String input) {
 
@@ -31,7 +32,7 @@ class PurchaseInfosTest {
     @ParameterizedTest
     @DisplayName("정상적인 입력")
     @CsvSource(
-            value = {"[콜라-10]:1", "[콜라-10],[사이다-3]:2"},
+            value = {"[콜라-10]:1", "[콜라-10],[사이다-3]:2", "[물-1]:1"},
             delimiter = ':'
     )
     void test2(String input, String result) {

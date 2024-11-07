@@ -7,7 +7,7 @@ import java.util.Optional;
 import store.domain.Promotion;
 import store.repository.MapRepository;
 
-public class PromotionRepository implements MapRepository<Promotion> {
+public class PromotionMapRepository implements MapRepository<Promotion> {
 
     private final Map<String, Promotion> database = new HashMap<>();
 

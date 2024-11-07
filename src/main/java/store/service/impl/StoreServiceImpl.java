@@ -19,14 +19,14 @@ import store.utils.FileHandler;
 
 public class StoreServiceImpl implements StoreService {
 
-    private final MapRepository<Product> productRepository;
-    private final MapRepository<Promotion> promotionRepository;
+    private final MapRepository<Product> productMapRepository;
+    private final MapRepository<Promotion> promotionMapRepository;
     private final FileHandler fileHandler;
 
-    public StoreServiceImpl(MapRepository<Product> productRepository, MapRepository<Promotion> promotionRepository,
+    public StoreServiceImpl(MapRepository<Product> productMapRepository, MapRepository<Promotion> promotionMapRepository,
                             FileHandler fileHandler) {
-        this.productRepository = productRepository;
-        this.promotionRepository = promotionRepository;
+        this.productMapRepository = productMapRepository;
+        this.promotionMapRepository = promotionMapRepository;
         this.fileHandler = fileHandler;
     }
 
@@ -36,7 +36,7 @@ public class StoreServiceImpl implements StoreService {
 
         for (PromotionDto promotionDto : promotionDtos.getPromotionDtoList()) {
             Promotion promotion = promotionDto.toPromotion();
-            promotionRepository.save(promotionDto.name(), promotion);
+            promotionMapRepository.save(promotionDto.name(), promotion);
         }
     }
 
@@ -50,13 +50,13 @@ public class StoreServiceImpl implements StoreService {
             if (product == null) {
                 continue;
             }
-            productRepository.save(productDto.name(), product);
+            productMapRepository.save(productDto.name(), product);
         }
     }
 
     @Override
     public InventoryStatusDto getInventoryStatus() {
-        Products products = Products.create(productRepository.getAll());
+        Products products = Products.create(productMapRepository.getAll());
 
         return new InventoryStatusDto(products.toString());
     }
@@ -93,12 +93,12 @@ public class StoreServiceImpl implements StoreService {
     }
 
     private Promotion getPromotion(String promotionName) {
-        return promotionRepository.findById(promotionName).orElseThrow(() ->
+        return promotionMapRepository.findById(promotionName).orElseThrow(() ->
                 new InvalidFormatException(INVALID_FILE_FORMAT.getMessage()));
     }
 
     private Product getProduct(ProductDto productDto, Promotion promotion) {
-        return productRepository.findById(productDto.name())
+        return productMapRepository.findById(productDto.name())
                 .orElse(new Product(productDto.name(), productDto.price(), promotion));
     }
 }

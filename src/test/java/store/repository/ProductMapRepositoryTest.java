@@ -6,11 +6,11 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import store.domain.Product;
-import store.repository.impl.ProductRepository;
+import store.repository.impl.ProductMapRepository;
 
-class ProductRepositoryTest {
+class ProductMapRepositoryTest {
 
-    MapRepository<Product> productRepository = new ProductRepository();
+    MapRepository<Product> productMapRepository = new ProductMapRepository();
 
     @Test
     @DisplayName("리스트 반환 테스트")
@@ -18,11 +18,11 @@ class ProductRepositoryTest {
         // given
         Product product1 = new Product("apple", 1000, null);
         Product product2 = new Product("banana", 500, null);
-        productRepository.save("apple", product1);
-        productRepository.save("banana", product2);
+        productMapRepository.save("apple", product1);
+        productMapRepository.save("banana", product2);
 
         // when
-        List<Product> products = productRepository.getAll();
+        List<Product> products = productMapRepository.getAll();
 
         // then
         assertThat(products).containsExactly(product1, product2);

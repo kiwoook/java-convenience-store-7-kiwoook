@@ -62,6 +62,10 @@ public class Product {
         this.stock.addPromotionProduct(quantity);
     }
 
+    public Long calculateRequiredQuantity(Long requestQuantity) {
+        return stock.remainQuantity(requestQuantity, promotion);
+    }
+
 
     @Override
     public String toString() {

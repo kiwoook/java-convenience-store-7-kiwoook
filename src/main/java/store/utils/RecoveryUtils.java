@@ -1,5 +1,6 @@
 package store.utils;
 
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -34,6 +35,17 @@ public class RecoveryUtils {
             }
         }
     }
+
+    public static <T> T executeWithRetry(Supplier<T> inputSupplier) {
+        while (true) {
+            try {
+                return inputSupplier.get();  //i supplier.get()만 실행해서 결과 반환
+            } catch (IllegalArgumentException e) {
+                VIEWER.printError(e);
+            }
+        }
+    }
+
 
 
 }
