@@ -73,7 +73,6 @@ public class Product {
 
         return enterJoiner.add(normalStatus())
                 .toString();
-
     }
 
     private String promotionStatus() {
