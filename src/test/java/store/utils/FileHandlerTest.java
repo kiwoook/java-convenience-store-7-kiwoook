@@ -24,7 +24,7 @@ class FileHandlerTest {
     @DisplayName("프로모션 DTO 변환 테스트")
     void test2() {
         // given
-        String[] line = {"탄산2+1", "2", "1", "2024-01-01", "2024-12-31" };
+        String[] line = {"탄산2+1", "2", "1", "2024-01-01", "2024-12-31"};
 
         PromotionDto expect = new PromotionDto("탄산2+1", 2, 1,
                 LocalDate.of(2024, 1, 1),
@@ -41,7 +41,7 @@ class FileHandlerTest {
     @DisplayName("제품 DTO 변환 테스트")
     void test3() {
 
-        String[] line = {"콜라", "1000", "10", "탄산2+1" };
+        String[] line = {"콜라", "1000", "10", "탄산2+1"};
 
         ProductDto expect = new ProductDto("콜라", 1000, 10, "탄산2+1");
 
@@ -50,6 +50,13 @@ class FileHandlerTest {
 
         // then
         assertThat(result).isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("readFile 동작 테스트")
+    void test4() throws IOException {
+        fileHandler.readProductFile();
+        fileHandler.readPromotionFile();
     }
 
 }
