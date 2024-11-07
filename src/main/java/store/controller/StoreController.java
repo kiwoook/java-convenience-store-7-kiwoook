@@ -4,16 +4,19 @@ import java.io.IOException;
 import store.dto.InventoryStatusDto;
 import store.enums.PromptMessage;
 import store.service.StoreService;
-import store.viewer.Viewer;
+import store.viewer.InputViewer;
+import store.viewer.OutputViewer;
 
 public class StoreController {
 
     private final StoreService storeService;
-    private final Viewer viewer;
+    private final InputViewer inputViewer;
+    private final OutputViewer outputViewer;
 
-    public StoreController(StoreService storeService, Viewer viewer) {
+    public StoreController(StoreService storeService, InputViewer inputViewer, OutputViewer outputViewer) {
         this.storeService = storeService;
-        this.viewer = viewer;
+        this.inputViewer = inputViewer;
+        this.outputViewer = outputViewer;
     }
 
     public void init() throws IOException {
@@ -22,13 +25,13 @@ public class StoreController {
     }
 
     public void explain() {
-        viewer.promptMessage(PromptMessage.EXPLAIN);
+        inputViewer.promptMessage(PromptMessage.EXPLAIN);
         InventoryStatusDto inventoryStatus = storeService.getInventoryStatus();
-        viewer.printMessage(inventoryStatus.message());
+        outputViewer.printResult(inventoryStatus.message());
     }
 
     public void buy() {
-        viewer.promptMessage(PromptMessage.BUY);
+        inputViewer.promptMessage(PromptMessage.BUY);
 
     }
 }

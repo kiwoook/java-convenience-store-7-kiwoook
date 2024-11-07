@@ -4,11 +4,11 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import store.config.StoreConfig;
-import store.viewer.Viewer;
+import store.viewer.OutputViewer;
 
 public class RecoveryUtils {
 
-    private static final Viewer VIEWER = StoreConfig.getViewer();
+    private static final OutputViewer VIEWER = StoreConfig.getOutputViewer();
 
     private RecoveryUtils() {
     }
