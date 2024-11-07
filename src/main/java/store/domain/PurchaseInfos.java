@@ -17,6 +17,10 @@ public class PurchaseInfos {
         this.purchaseInfoList = new ArrayList<>();
     }
 
+    public PurchaseInfos(List<PurchaseInfo> purchaseInfoList) {
+        this.purchaseInfoList = purchaseInfoList;
+    }
+
     public PurchaseInfos(String input) {
         validInput(input);
         this.purchaseInfoList = mergePurchaseInfos(input);

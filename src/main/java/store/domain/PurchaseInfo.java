@@ -44,7 +44,7 @@ public class PurchaseInfo {
         return purchaseCountMap;
     }
 
-    public void validPurchase(Product product) {
+    public void validQuantity(Product product) {
         product.validStock(this.requestQuantity);
     }
 

@@ -45,7 +45,7 @@ class PurchaseInfoTest {
         Product product = new Product("제품", 1000, stock, null);
         PurchaseInfo purchaseInfo = new PurchaseInfo("[제품-20]");
 
-        purchaseInfo.validPurchase(product);
+        purchaseInfo.validQuantity(product);
     }
 
     @Test
@@ -56,7 +56,7 @@ class PurchaseInfoTest {
         PurchaseInfo purchaseInfo = new PurchaseInfo("[제품-21]");
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            purchaseInfo.validPurchase(product);
+            purchaseInfo.validQuantity(product);
         });
 
         assertThat(exception.getMessage()).isEqualTo(EXCEED_PURCHASE.getMessage());

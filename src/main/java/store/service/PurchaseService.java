@@ -9,9 +9,6 @@ public interface PurchaseService {
     // input을 받고 유효한 구매 LIST로 변환한다.
     void create(String input);
 
-    // 변환 후에 검증한다.
-    void validateQuantity();
-
     // 수량들을 체크하여 컨트롤러에 전송한다.
     CheckPurchaseInfosDto check();
 

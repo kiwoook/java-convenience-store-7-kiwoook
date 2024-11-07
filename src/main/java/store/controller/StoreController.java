@@ -30,8 +30,4 @@ public class StoreController {
         outputViewer.printResult(inventoryStatus.message());
     }
 
-    public void buy() {
-        inputViewer.promptMessage(PromptMessage.BUY);
-
-    }
 }

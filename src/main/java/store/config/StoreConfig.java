@@ -1,12 +1,18 @@
 package store.config;
 
+import store.controller.PurchaseController;
 import store.controller.StoreController;
 import store.domain.Product;
 import store.domain.Promotion;
+import store.domain.PurchaseInfos;
 import store.repository.MapRepository;
+import store.repository.SingleRepository;
 import store.repository.impl.ProductRepository;
 import store.repository.impl.PromotionRepository;
+import store.repository.impl.PurchaseInfoRepository;
+import store.service.PurchaseService;
 import store.service.StoreService;
+import store.service.impl.PurchaseServiceImpl;
 import store.service.impl.StoreServiceImpl;
 import store.utils.FileHandler;
 import store.viewer.InputViewer;
@@ -21,14 +27,23 @@ public class StoreConfig {
 
     private static final MapRepository<Product> productRepository = new ProductRepository();
     private static final MapRepository<Promotion> promotionRepository = new PromotionRepository();
+    private static final SingleRepository<PurchaseInfos> purchaseInfosRepository = new PurchaseInfoRepository();
 
     private static final StoreService storeService = new StoreServiceImpl(productRepository, promotionRepository,
             fileHandler);
-
     private static final StoreController storeController = new StoreController(storeService, input_viewer,
             output_viewer);
 
+    private static final PurchaseService purchaseService = new PurchaseServiceImpl(purchaseInfosRepository,
+            productRepository);
+    private static final PurchaseController purchaseController = new PurchaseController(purchaseService, input_viewer,
+            output_viewer);
+
     private StoreConfig() {
+    }
+
+    public static OutputViewer getOutputViewer() {
+        return output_viewer;
     }
 
     public static StoreService getStoreService() {
@@ -39,7 +54,7 @@ public class StoreConfig {
         return storeController;
     }
 
-    public static OutputViewer getOutputViewer() {
-        return output_viewer;
+    public static PurchaseController getPurchaseController() {
+        return purchaseController;
     }
 }
