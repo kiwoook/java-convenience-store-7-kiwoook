@@ -1,6 +1,8 @@
 package store.utils;
 
 import static store.enums.ErrorMessage.INVALID_FILE_FORMAT;
+import static store.utils.Constants.PRODUCT_FILE_PATH;
+import static store.utils.Constants.PROMOTION_FILE_PATH;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -9,6 +11,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import store.dto.ProductDto;
 import store.dto.ProductDtos;
 import store.dto.PromotionDto;
@@ -17,35 +20,34 @@ import store.exception.InvalidFormatException;
 
 public class FileHandler {
     public static final String SEPARATOR = ",";
-    private static final String PROMOTION_FILE_PATH = "src/main/resources/promotions.md";
-    private static final String PRODUCT_FILE_PATH = "src/main/resources/products.md";
+
     private static final int PROMOTION_FILED_COUNT = 5;
     private static final int PRODUCT_FILED_COUNT = 4;
 
-    public ProductDtos readProductFile() throws IOException {
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(PRODUCT_FILE_PATH))) {
-            String readLine = "";
-            List<ProductDto> productDtoList = new ArrayList<>();
+    public <T> List<T> readFile(String filePath, int fieldCount, Function<String[], T> function) throws IOException {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath))) {
+            List<T> dtoList = new ArrayList<>();
+            skipFirstLine(bufferedReader);
+            String readLine;
 
             while ((readLine = bufferedReader.readLine()) != null) {
-                String[] splitLine = split(readLine, PRODUCT_FILED_COUNT);
-                productDtoList.add(toProductDto(splitLine));
+                String[] splitLine = split(readLine, fieldCount);
+                dtoList.add(function.apply(splitLine));
             }
-            return new ProductDtos(productDtoList);
+            return dtoList;
         }
     }
 
-    public PromotionDtos readPromotionFile() throws IOException {
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(PROMOTION_FILE_PATH))) {
-            String readLine = "";
-            List<PromotionDto> promotionList = new ArrayList<>();
+    public void skipFirstLine(BufferedReader bufferedReader) throws IOException {
+        bufferedReader.readLine();
+    }
 
-            while ((readLine = bufferedReader.readLine()) != null) {
-                String[] splitLine = split(readLine, PROMOTION_FILED_COUNT);
-                promotionList.add(toPromotionDto(splitLine));
-            }
-            return new PromotionDtos(promotionList);
-        }
+    public ProductDtos readProductFile() throws IOException {
+        return new ProductDtos(readFile(PRODUCT_FILE_PATH, PRODUCT_FILED_COUNT, this::toProductDto));
+    }
+
+    public PromotionDtos readPromotionFile() throws IOException {
+        return new PromotionDtos(readFile(PROMOTION_FILE_PATH, PROMOTION_FILED_COUNT, this::toPromotionDto));
     }
 
     private void validLine(String input) {
@@ -90,7 +92,7 @@ public class FileHandler {
             String name = splitLine[0];
             long price = Long.parseLong(splitLine[1]);
             long quantity = Long.parseLong(splitLine[2]);
-            String promotionName = splitLine[3];
+            String promotionName = parsePromotionName(splitLine[3]);
 
             return new ProductDto(name, price, quantity, promotionName);
         } catch (NumberFormatException e) {
@@ -99,5 +101,11 @@ public class FileHandler {
 
     }
 
+    private String parsePromotionName(String promotionName) {
+        if (promotionName.equals("null")) {
+            return null;
+        }
+        return promotionName;
+    }
 
 }

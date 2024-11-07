@@ -3,13 +3,13 @@ package store.dto;
 import java.util.List;
 
 public class ProductDtos {
-    List<ProductDto> productList;
+    List<ProductDto> productDtoList;
 
     public ProductDtos(List<ProductDto> productList) {
-        this.productList = productList;
+        this.productDtoList = productList;
     }
 
-    public List<ProductDto> getProductList() {
-        return productList;
+    public List<ProductDto> getProductDtoList() {
+        return productDtoList;
     }
 }
