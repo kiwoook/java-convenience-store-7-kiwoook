@@ -131,5 +131,16 @@ class StockTest {
         }
     }
 
+    @Test
+    @DisplayName("2+1이고 재고가 5개일 때 5개를 요청하면 -2를 반환해야 한다.")
+    void test10() {
+        Promotion promotion = new Promotion(null, 2, 1, null, null);
+        Stock stock = new Stock(0, 5);
+
+        long result = stock.remainQuantity(5, promotion);
+
+        assertThat(result).isEqualTo(-2);
+    }
+
 
 }

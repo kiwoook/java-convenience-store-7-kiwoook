@@ -33,15 +33,11 @@ public class Promotion {
         return promotionBundle.getQuantity() + promotionBundle.buyQuantity();
     }
 
-    protected long totalBuyQuantity(long promotionBundleCount) {
-        return promotionBundleCount * promotionBundle.buyQuantity();
-    }
-
     protected long totalGetQuantity(long promotionBundleCount) {
         return promotionBundleCount * promotionBundle.getQuantity();
     }
 
-    protected long getPromotionalGiftQuantity(long requestQuantity) {
+    protected long getPromotionGiftQuantity(long requestQuantity) {
         if ((requestQuantity + promotionBundle.getQuantity()) % bundleQuantity() == 0) {
             return promotionBundle.getQuantity();
         }

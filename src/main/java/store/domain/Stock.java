@@ -24,7 +24,7 @@ public class Stock {
             return 0L;
         }
 
-        long promotionBundle = getPromotionBundle(requestQuantity, promotion);
+        long promotionBundle = getPromotionBundleCnt(requestQuantity, promotion);
         return promotion.totalGetQuantity(promotionBundle);
     }
 
@@ -72,19 +72,22 @@ public class Stock {
             return 0L;
         }
 
-        if (promotionQuantity < requestQuantity || promotion.bundleQuantity() > promotionQuantity) {
+        long giftQuantity = promotion.getPromotionGiftQuantity(requestQuantity);
+        if (promotionQuantity < Math.max(requestQuantity + giftQuantity, promotion.bundleQuantity())) {
             return calculateOriginalPriceQuantity(requestQuantity, promotion);
         }
 
-        return promotion.getPromotionalGiftQuantity(requestQuantity);
+        return giftQuantity;
     }
 
+
     /**
-     * 원가로 처리되는 수량을 반환하는 메서드
+     * 요청한 수량 중 원가로 처리되어야 하는 수량을 계산하는 메서드
+     * 프로모션이 존재하지 않는 경우 원가로 되는 요청 수량을 음수로 반환
      *
      * @param requestQuantity 요청한 수량
      * @param promotion       프로모션
-     * @return 해당 부족한 수량은 음수로 반환된다.
+     * @return 원가로 처리되는 수량은 음수로 반환
      */
 
     public long calculateOriginalPriceQuantity(long requestQuantity, Promotion promotion) {
@@ -93,15 +96,20 @@ public class Stock {
         if (promotion == null) {
             return -requestQuantity;
         }
-        long promotionBundle = getPromotionBundle(requestQuantity, promotion);
+        long promotionBundleCnt = getPromotionBundleCnt(requestQuantity, promotion);
 
-        long totalPromotionQuantity =
-                promotion.totalBuyQuantity(promotionBundle) + promotion.totalGetQuantity(promotionBundle);
+        long totalPromotionQuantity = promotion.bundleQuantity() * promotionBundleCnt;
 
         return totalPromotionQuantity - requestQuantity;
     }
 
-    private long getPromotionBundle(long requestQuantity, Promotion promotion) {
+    /**
+     * @param requestQuantity 요청한 수량
+     * @param promotion 프로모션
+     * @return 프로모션 묶음 수를 반환한다.
+     */
+
+    private long getPromotionBundleCnt(long requestQuantity, Promotion promotion) {
         long availablePromoUnits = Math.min(requestQuantity, promotionQuantity);
 
         return availablePromoUnits / promotion.bundleQuantity();

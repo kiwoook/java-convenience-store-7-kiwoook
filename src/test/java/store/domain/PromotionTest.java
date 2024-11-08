@@ -60,7 +60,7 @@ class PromotionTest {
         long m = Long.parseLong(v2);
 
         Promotion promotion = new Promotion("프로모션", n, m, null, LocalDate.now());
-        long result = promotion.getPromotionalGiftQuantity(n);
+        long result = promotion.getPromotionGiftQuantity(n);
 
         assertThat(result).isEqualTo(m);
     }
