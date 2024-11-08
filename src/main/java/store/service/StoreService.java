@@ -2,7 +2,7 @@ package store.service;
 
 import java.io.IOException;
 import store.domain.Product;
-import store.dto.InventoryStatusDto;
+import store.dto.Message;
 import store.dto.ProductDto;
 
 public interface StoreService {
@@ -14,7 +14,7 @@ public interface StoreService {
     void saveProduct() throws IOException;
 
     // 제품의 보유 상품을 출력하는 메소드
-    InventoryStatusDto getInventoryStatus();
+    Message getInventoryStatus();
 
     Product createProduct(ProductDto productDto);
 }

@@ -8,7 +8,7 @@ public interface InputViewer {
 
     String getInput();
 
-    void promptFreeItem(String productName, Long freeQuantity);
+    void promptFreeItem(String productName, long freeQuantity);
 
-    void promptNonDiscount(String productName, Long additionalQuantity);
+    void promptNonDiscount(String productName, long additionalQuantity);
 }

@@ -10,4 +10,6 @@ public interface MapRepository<T> {
     T save(String key, T object);
 
     List<T> getAll();
+    
+    void clear();
 }

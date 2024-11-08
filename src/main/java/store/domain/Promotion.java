@@ -34,15 +34,15 @@ public class Promotion {
         return buyQuantity + getQuantity;
     }
 
-    protected Long totalBuyQuantity(Long promotionBundle) {
-        return promotionBundle * getQuantity;
-    }
-
-    protected Long totalGetQuantity(Long promotionBundle) {
+    protected long totalBuyQuantity(long promotionBundle) {
         return promotionBundle * buyQuantity;
     }
 
-    protected Long getPromotionalGiftQuantity(Long requestQuantity) {
+    protected long totalGetQuantity(long promotionBundle) {
+        return promotionBundle * getQuantity;
+    }
+
+    protected long getPromotionalGiftQuantity(long requestQuantity) {
         if ((requestQuantity + getQuantity) % combinedQuantity() == 0) {
             return getQuantity;
         }

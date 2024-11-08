@@ -59,4 +59,11 @@ class FileHandlerTest {
         fileHandler.readPromotionFile();
     }
 
+    @Test
+    @DisplayName("splitLine 테스트")
+    void test5(){
+
+        // TODO 테스트
+    }
+
 }

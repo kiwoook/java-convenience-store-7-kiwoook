@@ -19,6 +19,38 @@ public class Stock {
         this.promotionQuantity = 0;
     }
 
+    public long calculateGiftQuantity(long requestQuantity, Promotion promotion) {
+        if (promotion == null) {
+            return 0L;
+        }
+
+        long availablePromoUnits = Math.min(requestQuantity, promotionQuantity);
+        long promotionBundle = availablePromoUnits / promotion.combinedQuantity();
+
+        return promotion.totalGetQuantity(promotionBundle);
+    }
+
+
+    public void applyQuantity(long requestQuantity) {
+        long exceedPromotionQuantity = requestQuantity - promotionQuantity;
+
+        if (exceedPromotionQuantity > 0) {
+            updatePromotionProduct(0);
+            updateNormalProduct(this.normalQuantity - exceedPromotionQuantity);
+            return;
+        }
+
+        updatePromotionProduct(this.promotionQuantity - requestQuantity);
+    }
+
+    private void updateNormalProduct(long count) {
+        this.normalQuantity = count;
+    }
+
+    private void updatePromotionProduct(long count) {
+        this.promotionQuantity = count;
+    }
+
     public void addNormalProduct(long count) {
         this.normalQuantity += count;
     }
@@ -27,7 +59,7 @@ public class Stock {
         this.promotionQuantity += count;
     }
 
-    public Long total() {
+    public long total() {
         return this.normalQuantity + this.promotionQuantity;
     }
 
@@ -45,20 +77,28 @@ public class Stock {
         return normalQuantity + COUNT_UNIT;
     }
 
-    public Long remainQuantity(Long requestQuantity, Promotion promotion) {
+    public long remainQuantity(long requestQuantity, Promotion promotion) {
         validRequestQuantity(requestQuantity);
         if (promotion == null || promotionQuantity == 0) {
             return 0L;
         }
 
-        if (promotionQuantity < requestQuantity) {
-            return calculateNonPromotionQuantity(requestQuantity, promotion);
+        if (promotionQuantity < requestQuantity || promotion.combinedQuantity() > promotionQuantity) {
+            return calculateOriginalPriceQuantity(requestQuantity, promotion);
         }
 
         return promotion.getPromotionalGiftQuantity(requestQuantity);
     }
 
-    private long calculateNonPromotionQuantity(Long requestQuantity, Promotion promotion) {
+    /**
+     * 원가로 처리되는 수량을 반환하는 메서드
+     *
+     * @param requestQuantity 요청한 수량
+     * @param promotion       프로모션
+     * @return 해당 부족한 수량은 음수로 반환된다.
+     */
+
+    public long calculateOriginalPriceQuantity(long requestQuantity, Promotion promotion) {
         long availablePromoUnits = Math.min(requestQuantity, promotionQuantity);
 
         long promotionBundle = availablePromoUnits / promotion.combinedQuantity();
@@ -69,9 +109,9 @@ public class Stock {
         return availablePromotionQuantity - requestQuantity;
     }
 
-    private void validRequestQuantity(Long requestQuantity) {
+    private void validRequestQuantity(long requestQuantity) {
         if (requestQuantity > total()) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("처리할 수 없는 요청 수량입니다!");
         }
     }
 

@@ -4,9 +4,9 @@ import static store.enums.PromptMessage.BUY;
 import static store.enums.PromptMessage.MEMBERSHIP_DISCOUNT;
 import static store.enums.PromptMessage.RETRY_PURCHASE;
 
-import store.dto.PurchaseConfirmDto;
-import store.dto.PurchaseConfirmDtos;
-import store.dto.ReceiptDto;
+import store.dto.Message;
+import store.dto.OrderConfirmDto;
+import store.dto.OrderConfirmDtos;
 import store.enums.Confirmation;
 import store.service.PurchaseService;
 import store.utils.RecoveryUtils;
@@ -31,8 +31,8 @@ public class PurchaseController {
     }
 
     public void check() {
-        PurchaseConfirmDtos confirmDtos = purchaseService.check();
-        for (PurchaseConfirmDto confirmDto : confirmDtos.getCheckPurchaseInfoDtos()) {
+        OrderConfirmDtos confirmDtos = purchaseService.check();
+        for (OrderConfirmDto confirmDto : confirmDtos.items()) {
             if (confirmDto.problemQuantity() == 0) {
                 purchaseService.processQuantity(confirmDto);
                 continue;
@@ -44,8 +44,10 @@ public class PurchaseController {
     public void printReceipt() {
         inputViewer.promptMessage(MEMBERSHIP_DISCOUNT);
 
-        ReceiptDto receiptDto = RecoveryUtils.executeWithRetry(() -> Confirmation.from(inputViewer.getInput()),
+        Message receiptDto = RecoveryUtils.executeWithRetry(() -> Confirmation.from(inputViewer.getInput()),
                 purchaseService::getReceipt);
+
+        outputViewer.printResult(receiptDto);
     }
 
     public boolean retry() {
@@ -54,7 +56,7 @@ public class PurchaseController {
         return confirmation.isBool();
     }
 
-    private void printProblemQuantity(PurchaseConfirmDto confirmDto) {
+    private void printProblemQuantity(OrderConfirmDto confirmDto) {
         if (confirmDto.problemQuantity() < 0) {
             inputViewer.promptNonDiscount(confirmDto.name(), -confirmDto.problemQuantity());
         }
@@ -64,7 +66,7 @@ public class PurchaseController {
         }
     }
 
-    private void confirmProblemQuantity(PurchaseConfirmDto confirmDto) {
+    private void confirmProblemQuantity(OrderConfirmDto confirmDto) {
         printProblemQuantity(confirmDto);
         Confirmation confirmation = RecoveryUtils.executeWithRetry(() -> Confirmation.from(inputViewer.getInput()));
         purchaseService.processProblemQuantity(confirmDto, confirmation);

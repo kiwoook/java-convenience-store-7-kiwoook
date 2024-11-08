@@ -10,7 +10,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class PurchaseInfosTest {
+class OrderInfosTest {
 
     @ParameterizedTest
     @DisplayName("잘못된 입력을 하면 에러를 발생한다.")
@@ -23,7 +23,7 @@ class PurchaseInfosTest {
     void test1(String input) {
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            PurchaseInfos.create(input);
+            OrderInfos.create(input);
         });
 
         assertThat(exception.getMessage()).isEqualTo(INVALID_PURCHASE.getMessage());
@@ -36,7 +36,7 @@ class PurchaseInfosTest {
             delimiter = ':'
     )
     void test2(String input, String result) {
-        PurchaseInfos purchaseInfos = new PurchaseInfos(input);
+        OrderInfos purchaseInfos = new OrderInfos(input);
 
         assertThat(purchaseInfos.size()).isEqualTo(Integer.parseInt(result));
     }
@@ -45,13 +45,13 @@ class PurchaseInfosTest {
     @DisplayName("중복된 제품은 병합되어서 반환된다.")
     @ValueSource(strings = {"[콜라-10],[콜라-20],[사이다-10]"})
     void test2(String input) {
-        PurchaseInfo purchaseInfo1 = new PurchaseInfo("[사이다-10]");
-        PurchaseInfo purchaseInfo2 = new PurchaseInfo("[콜라-30]");
-        PurchaseInfos expect = new PurchaseInfos();
-        expect.addPurchaseInfo(purchaseInfo2);
-        expect.addPurchaseInfo(purchaseInfo1);
+        OrderInfo orderInfo1 = new OrderInfo("[사이다-10]");
+        OrderInfo orderInfo2 = new OrderInfo("[콜라-30]");
+        OrderInfos expect = new OrderInfos();
+        expect.addPurchaseInfo(orderInfo2);
+        expect.addPurchaseInfo(orderInfo1);
 
-        PurchaseInfos result = new PurchaseInfos(input);
+        OrderInfos result = new OrderInfos(input);
 
         assertThat(result.size()).isEqualTo(2);
         assertThat(result).isEqualTo(expect);

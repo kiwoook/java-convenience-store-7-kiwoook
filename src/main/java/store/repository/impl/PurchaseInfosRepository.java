@@ -1,21 +1,21 @@
 package store.repository.impl;
 
 import java.util.Optional;
-import store.domain.PurchaseInfos;
+import store.domain.OrderInfos;
 import store.repository.SingleRepository;
 
-public class PurchaseInfosRepository implements SingleRepository<PurchaseInfos> {
+public class PurchaseInfosRepository implements SingleRepository<OrderInfos> {
 
-    private PurchaseInfos purchaseInfos;
+    private OrderInfos purchaseInfos;
 
     @Override
-    public PurchaseInfos save(PurchaseInfos object) {
+    public OrderInfos save(OrderInfos object) {
         this.purchaseInfos = object;
         return purchaseInfos;
     }
 
     @Override
-    public Optional<PurchaseInfos> get() {
+    public Optional<OrderInfos> get() {
         return Optional.ofNullable(this.purchaseInfos);
     }
 }

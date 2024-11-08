@@ -1,5 +1,6 @@
 package store;
 
+import camp.nextstep.edu.missionutils.Console;
 import java.io.IOException;
 import store.config.StoreConfig;
 import store.controller.PurchaseController;
@@ -11,17 +12,24 @@ public class Application {
     private static final PurchaseController purchaseController = StoreConfig.getPurchaseController();
 
     public static void main(String[] args) throws IOException {
-        boolean isRetry = true;
+        storeController.init();
 
-        while (isRetry) {
-            storeController.init();
-            storeController.explain();
+        try {
+            boolean isRetry = true;
+            while (isRetry) {
+                storeController.explain();
 
-            purchaseController.buy();
-            purchaseController.check();
-            purchaseController.printReceipt();
-            isRetry = purchaseController.retry();
+                purchaseController.buy();
+                purchaseController.check();
+                purchaseController.printReceipt();
+                storeController.clearOrder();
+                isRetry = purchaseController.retry();
+            }
+        } finally {
+            Console.close();
+            storeController.clearFile();
         }
+
 
     }
 }

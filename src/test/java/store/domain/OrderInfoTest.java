@@ -11,13 +11,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class PurchaseInfoTest {
+class OrderInfoTest {
 
     @ParameterizedTest
     @DisplayName("입력값 검증 테스트")
     @ValueSource(strings = {"[콜라-10]", "[우오어어어어어ㅓ-10000000000000]", "[3-3]"})
     void test1(String input) {
-        PurchaseInfo result = new PurchaseInfo(input);
+        OrderInfo result = new OrderInfo(input);
 
         assertThat(result.toOriginalInput()).isEqualTo(input);
     }
@@ -32,7 +32,7 @@ class PurchaseInfoTest {
     })
     void test2(String input) {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            new PurchaseInfo(input);
+            new OrderInfo(input);
         });
 
         assertThat(exception.getMessage()).isEqualTo(INVALID_PURCHASE.getMessage());
@@ -43,9 +43,9 @@ class PurchaseInfoTest {
     void test3() {
         Stock stock = new Stock(10, 10);
         Product product = new Product("제품", 1000, stock, null);
-        PurchaseInfo purchaseInfo = new PurchaseInfo("[제품-20]");
+        OrderInfo orderInfo = new OrderInfo("[제품-20]");
 
-        purchaseInfo.validQuantity(product);
+        orderInfo.validQuantity(product);
     }
 
     @Test
@@ -53,10 +53,10 @@ class PurchaseInfoTest {
     void test4() {
         Stock stock = new Stock(10, 10);
         Product product = new Product("제품", 1000, stock, null);
-        PurchaseInfo purchaseInfo = new PurchaseInfo("[제품-21]");
+        OrderInfo orderInfo = new OrderInfo("[제품-21]");
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            purchaseInfo.validQuantity(product);
+            orderInfo.validQuantity(product);
         });
 
         assertThat(exception.getMessage()).isEqualTo(EXCEED_PURCHASE.getMessage());

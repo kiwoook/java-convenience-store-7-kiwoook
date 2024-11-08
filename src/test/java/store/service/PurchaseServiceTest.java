@@ -5,20 +5,24 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static store.enums.ErrorMessage.EXCEED_PURCHASE;
 import static store.enums.ErrorMessage.NOT_EXIST_PRODUCT;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import store.config.StoreConfig;
 import store.domain.Product;
 import store.domain.Stock;
 import store.repository.impl.ProductMapRepository;
 import store.repository.impl.PurchaseInfosRepository;
 import store.repository.impl.PurchaseVerificationRepository;
+import store.service.impl.ClearService;
 import store.service.impl.PurchaseServiceImpl;
 
 class PurchaseServiceTest {
 
     private ProductMapRepository productRepository;
     private PurchaseServiceImpl purchaseService;
+    private ClearService clearService = StoreConfig.getClearService();
 
     @BeforeEach
     void setUp() {
@@ -85,6 +89,12 @@ class PurchaseServiceTest {
 
         // when
         purchaseService.create("[제품1-5]");
+    }
+
+    @AfterEach
+    void cleanUp(){
+        clearService.clearFile();
+        clearService.clearOrder();
     }
 
 }

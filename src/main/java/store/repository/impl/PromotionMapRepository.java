@@ -27,4 +27,9 @@ public class PromotionMapRepository implements MapRepository<Promotion> {
                 .stream()
                 .toList();
     }
+
+    @Override
+    public void clear() {
+        this.database.clear();
+    }
 }

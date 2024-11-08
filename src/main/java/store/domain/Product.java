@@ -34,7 +34,7 @@ public class Product {
         this.promotion = promotion;
     }
 
-    public void validStock(Long requestCount) {
+    public void validStock(long requestCount) {
         if (stock.total() < requestCount) {
             throw new IllegalArgumentException(EXCEED_PURCHASE.getMessage());
         }
@@ -54,6 +54,7 @@ public class Product {
         }
     }
 
+
     public void addNormalQuantity(long quantity) {
         this.stock.addNormalProduct(quantity);
     }
@@ -62,8 +63,30 @@ public class Product {
         this.stock.addPromotionProduct(quantity);
     }
 
-    public Long calculateRequiredQuantity(Long requestQuantity) {
+    public long calculateRequiredQuantity(long requestQuantity) {
         return stock.remainQuantity(requestQuantity, promotion);
+    }
+
+    public long sumOriginalPrice(long requestQuantity) {
+        if (promotion == null) {
+            return requestQuantity * price;
+        }
+
+        long originalQuantity = this.stock.calculateOriginalPriceQuantity(requestQuantity, promotion);
+
+        return -originalQuantity * price;
+    }
+
+    public long calculateGiftQuantity(long requestQuantity) {
+        return stock.calculateGiftQuantity(requestQuantity, promotion);
+    }
+
+    public long calculateSumPrice(long quantity) {
+        return quantity * price;
+    }
+
+    public void applyStock(long requestQuantity) {
+        stock.applyQuantity(requestQuantity);
     }
 
 

@@ -2,12 +2,13 @@ package store.service.impl;
 
 import static store.enums.ErrorMessage.INVALID_FILE_FORMAT;
 
+import camp.nextstep.edu.missionutils.DateTimes;
 import java.io.IOException;
 import java.time.LocalDate;
 import store.domain.Product;
 import store.domain.Products;
 import store.domain.Promotion;
-import store.dto.InventoryStatusDto;
+import store.dto.Message;
 import store.dto.ProductDto;
 import store.dto.ProductDtos;
 import store.dto.PromotionDto;
@@ -44,7 +45,7 @@ public class StoreServiceImpl implements StoreService {
     public void saveProduct() throws IOException {
         ProductDtos productDtos = fileHandler.readProductFile();
 
-        for (ProductDto productDto : productDtos.getProductDtoList()) {
+        for (ProductDto productDto : productDtos.items()) {
             Product product = createProduct(productDto);
 
             if (product == null) {
@@ -55,10 +56,10 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public InventoryStatusDto getInventoryStatus() {
+    public Message getInventoryStatus() {
         Products products = Products.create(productMapRepository.getAll());
 
-        return new InventoryStatusDto(products.toString());
+        return new Message(products.toString());
     }
 
     @Override
@@ -66,7 +67,9 @@ public class StoreServiceImpl implements StoreService {
         if (productDto.promotionName() == null) {
             return createNormalProduct(productDto);
         }
-        return createPromotionProduct(productDto);
+
+        LocalDate currentDate = getCurrentDate();
+        return createPromotionProduct(productDto,currentDate );
 
     }
 
@@ -78,10 +81,10 @@ public class StoreServiceImpl implements StoreService {
         return product;
     }
 
-    private Product createPromotionProduct(ProductDto productDto) {
+    public Product createPromotionProduct(ProductDto productDto, LocalDate currentDate) {
         Promotion promotion = getPromotion(productDto.promotionName());
 
-        if (!promotion.isValidPromotion(LocalDate.now())) {
+        if (!promotion.isValidPromotion(currentDate)) {
             return null;
         }
 
@@ -100,5 +103,9 @@ public class StoreServiceImpl implements StoreService {
     private Product getProduct(ProductDto productDto, Promotion promotion) {
         return productMapRepository.findById(productDto.name())
                 .orElse(new Product(productDto.name(), productDto.price(), promotion));
+    }
+
+    private LocalDate getCurrentDate(){
+        return LocalDate.from(DateTimes.now());
     }
 }

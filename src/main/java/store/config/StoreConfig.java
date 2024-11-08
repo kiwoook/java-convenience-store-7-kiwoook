@@ -2,10 +2,10 @@ package store.config;
 
 import store.controller.PurchaseController;
 import store.controller.StoreController;
+import store.domain.OrderInfos;
+import store.domain.OrderVerification;
 import store.domain.Product;
 import store.domain.Promotion;
-import store.domain.PurchaseInfos;
-import store.domain.PurchaseVerification;
 import store.repository.ListRepository;
 import store.repository.MapRepository;
 import store.repository.SingleRepository;
@@ -15,6 +15,7 @@ import store.repository.impl.PurchaseInfosRepository;
 import store.repository.impl.PurchaseVerificationRepository;
 import store.service.PurchaseService;
 import store.service.StoreService;
+import store.service.impl.ClearService;
 import store.service.impl.PurchaseServiceImpl;
 import store.service.impl.StoreServiceImpl;
 import store.utils.FileHandler;
@@ -28,19 +29,22 @@ public class StoreConfig {
     private static final InputViewer input_viewer = new InputViewerImpl();
     private static final OutputViewer output_viewer = new OutputViewerImpl();
 
-    private static final MapRepository<Product> PRODUCT_MAP_REPOSITORY = new ProductMapRepository();
-    private static final MapRepository<Promotion> PROMOTION_MAP_REPOSITORY = new PromotionMapRepository();
-    private static final SingleRepository<PurchaseInfos> purchaseInfosRepository = new PurchaseInfosRepository();
-    private static final ListRepository<PurchaseVerification> purchaseVerificationRepository = new PurchaseVerificationRepository();
+    private static final MapRepository<Product> productMapRepository = new ProductMapRepository();
+    private static final MapRepository<Promotion> promotionMapRepository = new PromotionMapRepository();
+    private static final SingleRepository<OrderInfos> purchaseInfosRepository = new PurchaseInfosRepository();
+    private static final ListRepository<OrderVerification> purchaseVerificationRepository = new PurchaseVerificationRepository();
 
-    private static final StoreService storeService = new StoreServiceImpl(PRODUCT_MAP_REPOSITORY,
-            PROMOTION_MAP_REPOSITORY,
+    private static final ClearService clearService = new ClearService(productMapRepository,
+            purchaseVerificationRepository, promotionMapRepository);
+
+    private static final StoreService storeService = new StoreServiceImpl(productMapRepository,
+            promotionMapRepository,
             fileHandler);
-    private static final StoreController storeController = new StoreController(storeService, input_viewer,
+    private static final StoreController storeController = new StoreController(storeService, clearService, input_viewer,
             output_viewer);
 
     private static final PurchaseService purchaseService = new PurchaseServiceImpl(purchaseInfosRepository,
-            PRODUCT_MAP_REPOSITORY, purchaseVerificationRepository);
+            productMapRepository, purchaseVerificationRepository);
     private static final PurchaseController purchaseController = new PurchaseController(purchaseService, input_viewer,
             output_viewer);
 
@@ -54,6 +58,10 @@ public class StoreConfig {
 
     public static StoreService getStoreService() {
         return storeService;
+    }
+
+    public static ClearService getClearService() {
+        return clearService;
     }
 
     public static StoreController getStoreController() {

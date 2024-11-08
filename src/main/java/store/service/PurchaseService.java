@@ -1,19 +1,19 @@
 package store.service;
 
-import store.dto.PurchaseConfirmDto;
-import store.dto.PurchaseConfirmDtos;
-import store.dto.ReceiptDto;
+import store.dto.Message;
+import store.dto.OrderConfirmDto;
+import store.dto.OrderConfirmDtos;
 import store.enums.Confirmation;
 
 public interface PurchaseService {
 
     void create(String input);
 
-    PurchaseConfirmDtos check();
+    OrderConfirmDtos check();
 
-    void processQuantity(PurchaseConfirmDto purchaseConfirmDto);
+    void processQuantity(OrderConfirmDto orderConfirmDto);
 
-    void processProblemQuantity(PurchaseConfirmDto purchaseConfirmDto, Confirmation confirmation);
+    void processProblemQuantity(OrderConfirmDto orderConfirmDto, Confirmation confirmation);
 
-    ReceiptDto getReceipt(Confirmation confirmation);
+    Message getReceipt(Confirmation confirmation);
 }

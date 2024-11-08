@@ -1,5 +1,6 @@
 package store.viewer.impl;
 
+import store.dto.Message;
 import store.viewer.OutputViewer;
 
 public class OutputViewerImpl implements OutputViewer {
@@ -10,7 +11,7 @@ public class OutputViewerImpl implements OutputViewer {
     }
 
     @Override
-    public void printResult(String message) {
+    public void printResult(Message message) {
         System.out.println(message);
 
     }

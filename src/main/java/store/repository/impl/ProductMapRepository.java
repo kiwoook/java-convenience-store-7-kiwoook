@@ -28,4 +28,9 @@ public class ProductMapRepository implements MapRepository<Product> {
                 .stream()
                 .toList();
     }
+
+    @Override
+    public void clear() {
+        this.database.clear();
+    }
 }

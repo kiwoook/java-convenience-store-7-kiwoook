@@ -7,4 +7,6 @@ public interface ListRepository<T> {
     T save(T object);
 
     List<T> getAll();
+
+    void clear();
 }

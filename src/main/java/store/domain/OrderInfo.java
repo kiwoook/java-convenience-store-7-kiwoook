@@ -6,9 +6,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import store.dto.PurchaseConfirmDto;
+import store.dto.OrderConfirmDto;
 
-public class PurchaseInfo {
+public class OrderInfo {
 
     private static final int MIN_LENGTH = 5;
     private static final String OPEN_BRACKET = "[";
@@ -21,36 +21,36 @@ public class PurchaseInfo {
     private static final int ZERO = 0;
 
     private String productName;
-    private Long requestQuantity;
+    private long requestQuantity;
 
-    public PurchaseInfo(String input) {
+    public OrderInfo(String input) {
         validInput(input);
         parseNameAndQuantity(input);
     }
 
-    public PurchaseInfo(String productName, Long requestQuantity) {
+    public OrderInfo(String productName, long requestQuantity) {
         this.productName = productName;
         this.requestQuantity = requestQuantity;
     }
 
-    public static PurchaseInfo create(String input) {
-        return new PurchaseInfo(input);
+    public static OrderInfo create(String input) {
+        return new OrderInfo(input);
     }
 
-    protected static Map<String, Long> totalPurchaseCount(List<PurchaseInfo> purchaseInfos) {
+    protected static Map<String, Long> totalPurchaseCount(List<OrderInfo> orderInfos) {
         Map<String, Long> purchaseCountMap = new LinkedHashMap<>();
 
-        purchaseInfos.forEach(
-                purchaseInfo -> purchaseCountMap.merge(purchaseInfo.productName, purchaseInfo.requestQuantity,
+        orderInfos.forEach(
+                orderInfo -> purchaseCountMap.merge(orderInfo.productName, orderInfo.requestQuantity,
                         Long::sum));
 
         return purchaseCountMap;
     }
 
-    public PurchaseConfirmDto toConfirmDto(Product product) {
-        Long requireQuantity = product.calculateRequiredQuantity(this.requestQuantity);
+    public OrderConfirmDto toConfirmDto(Product product) {
+        long requireQuantity = product.calculateRequiredQuantity(this.requestQuantity);
 
-        return PurchaseConfirmDto.create(this.productName, this.requestQuantity, requireQuantity);
+        return OrderConfirmDto.create(this.productName, this.requestQuantity, requireQuantity);
     }
 
     public void validQuantity(Product product) {
@@ -91,7 +91,7 @@ public class PurchaseInfo {
         }
     }
 
-    private void validQuantity(Long number) {
+    private void validQuantity(long number) {
         if (number <= ZERO) {
             throw new IllegalArgumentException(INVALID_PURCHASE.getMessage());
         }
@@ -136,7 +136,7 @@ public class PurchaseInfo {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        PurchaseInfo that = (PurchaseInfo) o;
+        OrderInfo that = (OrderInfo) o;
         return Objects.equals(productName, that.productName) && Objects.equals(requestQuantity,
                 that.requestQuantity);
     }
