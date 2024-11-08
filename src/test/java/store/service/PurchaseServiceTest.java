@@ -12,20 +12,22 @@ import org.junit.jupiter.api.Test;
 import store.config.StoreConfig;
 import store.domain.Product;
 import store.domain.Stock;
-import store.repository.impl.ProductMapRepository;
+import store.domain.vo.ProductName;
+import store.repository.ProductRepository;
+import store.repository.impl.ProductRepositoryImpl;
 import store.repository.impl.PurchaseInfosRepository;
 import store.repository.impl.PurchaseVerificationRepository;
 import store.service.impl.PurchaseServiceImpl;
 
 class PurchaseServiceTest {
 
-    private ProductMapRepository productRepository;
-    private PurchaseServiceImpl purchaseService;
     private static final ClearService clearService = StoreConfig.getClearService();
+    private ProductRepository productRepository;
+    private PurchaseServiceImpl purchaseService;
 
     @BeforeEach
     void setUp() {
-        productRepository = new ProductMapRepository();
+        productRepository = new ProductRepositoryImpl();
         PurchaseInfosRepository purchaseInfosSingleRepository = new PurchaseInfosRepository();
         PurchaseVerificationRepository purchaseVerificationRepository = new PurchaseVerificationRepository();
         purchaseService = new PurchaseServiceImpl(purchaseInfosSingleRepository,
@@ -36,7 +38,7 @@ class PurchaseServiceTest {
     @DisplayName("해당 제품이 없으면 에러를 반환")
     void validateQuantityTest1() {
         // given
-        String productName = "제품2";
+        ProductName productName = ProductName.create("제품2");
         Product product = new Product(productName, 1000, null);
 
         productRepository.save(productName, product);
@@ -53,7 +55,7 @@ class PurchaseServiceTest {
     @DisplayName("제품이 존재하나 재고가 0일 경우 에러를 반환")
     void validateQuantityTest2() {
         // given
-        String productName = "제품1";
+        ProductName productName = ProductName.create("제품1");
         Product product = new Product(productName, 1000, new Stock(), null);
 
         productRepository.save(productName, product);
@@ -69,7 +71,7 @@ class PurchaseServiceTest {
     @Test
     @DisplayName("일반 재고가 존재할 경우 정상 처리")
     void validateQuantityTest3() {
-        String productName = "제품1";
+        ProductName productName = ProductName.create("제품1");
         Product product = new Product(productName, 1000, new Stock(5, 0), null);
 
         productRepository.save(productName, product);
@@ -81,7 +83,7 @@ class PurchaseServiceTest {
     @Test
     @DisplayName("프로모션 재고가 존재할 경우 정상 처리")
     void validateQuantityTest4() {
-        String productName = "제품1";
+        ProductName productName = ProductName.create("제품1");
         Product product = new Product(productName, 1000, new Stock(0, 5), null);
 
         productRepository.save(productName, product);

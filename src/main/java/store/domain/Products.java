@@ -8,21 +8,25 @@ import java.util.StringJoiner;
 
 public class Products {
 
-    private final List<Product> productList;
+    private final List<Product> items;
 
-    public Products(List<Product> productList) {
-        this.productList = productList;
+    public Products(List<Product> items) {
+        this.items = items;
     }
 
-    public static Products create(List<Product> productList){
+    public static Products create(List<Product> productList) {
         return new Products(productList);
+    }
+
+    public int size() {
+        return items.size();
     }
 
     @Override
     public String toString() {
         StringJoiner joiner = new StringJoiner(ENTER);
 
-        for (Product product : productList) {
+        for (Product product : items) {
             joiner.add(product.toString());
         }
 
@@ -38,11 +42,11 @@ public class Products {
             return false;
         }
         Products products = (Products) o;
-        return Objects.equals(productList, products.productList);
+        return Objects.equals(items, products.items);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(productList);
+        return Objects.hashCode(items);
     }
 }

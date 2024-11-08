@@ -4,11 +4,12 @@ import static store.utils.Constants.BLANK;
 import static store.utils.Constants.TAB;
 
 import java.util.StringJoiner;
+import store.domain.vo.ProductName;
 import store.dto.OrderConfirmDto;
 import store.enums.Confirmation;
 import store.utils.StringUtils;
 
-public record OrderVerification(String productName, long requestQuantity) {
+public record OrderVerification(ProductName name, long requestQuantity) {
 
     private static final long ZERO = 0;
 
@@ -44,7 +45,7 @@ public record OrderVerification(String productName, long requestQuantity) {
     public String getStatus(Product product) {
         StringJoiner joiner = new StringJoiner(TAB);
 
-        return joiner.add(productName)
+        return joiner.add(name.value())
                 .add(BLANK)
                 .add(toQuantityString())
                 .add(BLANK)
@@ -60,7 +61,7 @@ public record OrderVerification(String productName, long requestQuantity) {
             return null;
         }
 
-        return joiner.add(productName + TAB)
+        return joiner.add(name.value() + TAB)
                 .add(String.valueOf(giftQuantity))
                 .toString();
     }
@@ -85,7 +86,7 @@ public record OrderVerification(String productName, long requestQuantity) {
 
     @Override
     public String toString() {
-        return productName;
+        return name.value();
     }
 
 }

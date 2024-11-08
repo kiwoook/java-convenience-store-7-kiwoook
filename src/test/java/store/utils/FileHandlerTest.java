@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import store.domain.vo.ProductName;
 import store.dto.ProductDto;
 import store.dto.PromotionDto;
 
@@ -43,7 +44,8 @@ class FileHandlerTest {
 
         String[] line = {"콜라", "1000", "10", "탄산2+1"};
 
-        ProductDto expect = new ProductDto("콜라", 1000, 10, "탄산2+1");
+        ProductName productName = new ProductName("콜라");
+        ProductDto expect = new ProductDto(productName, 1000, 10, "탄산2+1");
 
         // when
         ProductDto result = fileHandler.toProductDto(line);
@@ -61,7 +63,7 @@ class FileHandlerTest {
 
     @Test
     @DisplayName("splitLine 테스트")
-    void test5(){
+    void test5() {
 
         // TODO 테스트
     }

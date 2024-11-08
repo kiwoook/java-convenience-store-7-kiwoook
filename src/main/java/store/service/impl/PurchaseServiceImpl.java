@@ -8,27 +8,27 @@ import store.domain.OrderInfos;
 import store.domain.OrderVerification;
 import store.domain.Product;
 import store.domain.Receipt;
+import store.domain.vo.ProductName;
 import store.dto.Message;
 import store.dto.OrderConfirmDto;
 import store.dto.OrderConfirmDtos;
 import store.enums.Confirmation;
 import store.exception.EntityNotFoundException;
 import store.repository.ListRepository;
-import store.repository.MapRepository;
+import store.repository.ProductRepository;
 import store.repository.SingleRepository;
 import store.service.PurchaseService;
 
 public class PurchaseServiceImpl implements PurchaseService {
 
     private final SingleRepository<OrderInfos> orderInfosRepository;
-    private final MapRepository<Product> productMapRepository;
+    private final ProductRepository productRepository;
     private final ListRepository<OrderVerification> orderVerificationRepository;
 
-    public PurchaseServiceImpl(SingleRepository<OrderInfos> orderInfosRepository,
-                               MapRepository<Product> productMapRepository,
+    public PurchaseServiceImpl(SingleRepository<OrderInfos> orderInfosRepository, ProductRepository productRepository,
                                ListRepository<OrderVerification> orderVerificationRepository) {
         this.orderInfosRepository = orderInfosRepository;
-        this.productMapRepository = productMapRepository;
+        this.productRepository = productRepository;
         this.orderVerificationRepository = orderVerificationRepository;
     }
 
@@ -41,12 +41,12 @@ public class PurchaseServiceImpl implements PurchaseService {
 
     @Override
     public OrderConfirmDtos check() {
-        OrderInfos purchaseInfos = getOrderInfos();
+        OrderInfos orderInfos = getOrderInfos();
 
-        List<OrderConfirmDto> orderConfirmDtoList = purchaseInfos.stream()
-                .map(purchaseInfo -> {
-                    Product product = getProduct(purchaseInfo.getProductName());
-                    return purchaseInfo.toConfirmDto(product);
+        List<OrderConfirmDto> orderConfirmDtoList = orderInfos.stream()
+                .map(orderInfo -> {
+                    Product product = getProduct(orderInfo.getProductName());
+                    return orderInfo.toConfirmDto(product);
                 })
                 .toList();
 
@@ -75,7 +75,7 @@ public class PurchaseServiceImpl implements PurchaseService {
         Receipt receipt = Receipt.create();
 
         orderVerifications.forEach(purchaseVerification -> {
-            Product product = getProduct(purchaseVerification.productName());
+            Product product = getProduct(purchaseVerification.name());
             receipt.processOrder(purchaseVerification, product);
             applyPurchase(product, purchaseVerification);
         });
@@ -95,13 +95,13 @@ public class PurchaseServiceImpl implements PurchaseService {
                 .orElseThrow(() -> new EntityNotFoundException(NOT_SAVE_PURCHASE_INFO.getMessage()));
     }
 
-    private Product getProduct(String productName) {
-        return productMapRepository.findById(productName)
+    private Product getProduct(ProductName productName) {
+        return productRepository.findByProductName(productName)
                 .orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_PRODUCT.getMessage()));
     }
 
     private void applyPurchase(Product product, OrderVerification purchaseVerification) {
         purchaseVerification.apply(product);
-        productMapRepository.save(purchaseVerification.productName(), product);
+        productRepository.save(purchaseVerification.name(), product);
     }
 }

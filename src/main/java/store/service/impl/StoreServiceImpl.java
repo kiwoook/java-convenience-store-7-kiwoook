@@ -14,20 +14,22 @@ import store.dto.ProductDtos;
 import store.dto.PromotionDto;
 import store.dto.PromotionDtos;
 import store.exception.InvalidFormatException;
-import store.repository.MapRepository;
+import store.repository.PromotionRepository;
+import store.repository.ProductRepository;
 import store.service.StoreService;
 import store.utils.FileHandler;
 
 public class StoreServiceImpl implements StoreService {
 
-    private final MapRepository<Product> productMapRepository;
-    private final MapRepository<Promotion> promotionMapRepository;
+    private final ProductRepository productRepository;
+    private final PromotionRepository promotionPromotionRepository;
     private final FileHandler fileHandler;
 
-    public StoreServiceImpl(MapRepository<Product> productMapRepository, MapRepository<Promotion> promotionMapRepository,
+    public StoreServiceImpl(ProductRepository productRepository, PromotionRepository promotionPromotionRepository,
                             FileHandler fileHandler) {
-        this.productMapRepository = productMapRepository;
-        this.promotionMapRepository = promotionMapRepository;
+
+        this.productRepository = productRepository;
+        this.promotionPromotionRepository = promotionPromotionRepository;
         this.fileHandler = fileHandler;
     }
 
@@ -37,7 +39,7 @@ public class StoreServiceImpl implements StoreService {
 
         for (PromotionDto promotionDto : promotionDtos.items()) {
             Promotion promotion = promotionDto.toPromotion();
-            promotionMapRepository.save(promotionDto.name(), promotion);
+            promotionPromotionRepository.save(promotionDto.name(), promotion);
         }
     }
 
@@ -47,17 +49,16 @@ public class StoreServiceImpl implements StoreService {
 
         for (ProductDto productDto : productDtos.items()) {
             Product product = createProduct(productDto);
-
             if (product == null) {
                 continue;
             }
-            productMapRepository.save(productDto.name(), product);
+            productRepository.save(productDto.name(), product);
         }
     }
 
     @Override
     public Message getInventoryStatus() {
-        Products products = Products.create(productMapRepository.getAll());
+        Products products = productRepository.getAll();
 
         return new Message(products.toString());
     }
@@ -69,7 +70,7 @@ public class StoreServiceImpl implements StoreService {
         }
 
         LocalDate currentDate = getCurrentDate();
-        return createPromotionProduct(productDto,currentDate);
+        return createPromotionProduct(productDto, currentDate);
 
     }
 
@@ -96,16 +97,16 @@ public class StoreServiceImpl implements StoreService {
     }
 
     private Promotion getPromotion(String promotionName) {
-        return promotionMapRepository.findById(promotionName).orElseThrow(() ->
+        return promotionPromotionRepository.findById(promotionName).orElseThrow(() ->
                 new InvalidFormatException(INVALID_FILE_FORMAT.getMessage()));
     }
 
     private Product getProduct(ProductDto productDto, Promotion promotion) {
-        return productMapRepository.findById(productDto.name())
+        return productRepository.findByProductName(productDto.name())
                 .orElse(new Product(productDto.name(), productDto.price(), promotion));
     }
 
-    private LocalDate getCurrentDate(){
+    private LocalDate getCurrentDate() {
         return LocalDate.from(DateTimes.now());
     }
 }

@@ -1,4 +1,7 @@
 package store.dto;
 
-public record ProductDto(String name, long price, long quantity, String promotionName) {
+import store.domain.vo.ProductName;
+
+public record ProductDto(ProductName name, long price, long quantity, String promotionName) {
+
 }

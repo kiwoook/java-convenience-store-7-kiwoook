@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
+import store.domain.vo.ProductName;
 
 class OrderInfoTest {
 
@@ -41,8 +42,9 @@ class OrderInfoTest {
     @Test
     @DisplayName("수량 존재")
     void test3() {
+        ProductName productName = ProductName.create("제품");
         Stock stock = new Stock(10, 10);
-        Product product = new Product("제품", 1000, stock, null);
+        Product product = new Product(productName, 1000, stock, null);
         OrderInfo orderInfo = new OrderInfo("[제품-20]");
 
         orderInfo.validQuantity(product);
@@ -51,8 +53,9 @@ class OrderInfoTest {
     @Test
     @DisplayName("수량 초과 에러 반환")
     void test4() {
+        ProductName productName = ProductName.create("제품");
         Stock stock = new Stock(10, 10);
-        Product product = new Product("제품", 1000, stock, null);
+        Product product = new Product(productName, 1000, stock, null);
         OrderInfo orderInfo = new OrderInfo("[제품-21]");
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {

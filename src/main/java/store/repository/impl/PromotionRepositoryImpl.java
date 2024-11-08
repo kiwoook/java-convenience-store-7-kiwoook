@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import store.domain.Promotion;
-import store.repository.MapRepository;
+import store.repository.PromotionRepository;
 
-public class PromotionMapRepository implements MapRepository<Promotion> {
+public class PromotionRepositoryImpl implements PromotionRepository {
 
     private final Map<String, Promotion> database = new HashMap<>();
 
@@ -19,13 +19,6 @@ public class PromotionMapRepository implements MapRepository<Promotion> {
     @Override
     public Promotion save(String key, Promotion object) {
         return database.put(key, object);
-    }
-
-    @Override
-    public List<Promotion> getAll() {
-        return database.values()
-                .stream()
-                .toList();
     }
 
     @Override

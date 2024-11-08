@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import store.domain.vo.ProductName;
 import store.dto.OrderConfirmDto;
 
 public class OrderInfo {
@@ -21,22 +22,22 @@ public class OrderInfo {
     private static final int SPLIT_LENGTH = 2;
     private static final int ZERO = 0;
 
-    private final String productName;
+    private final ProductName productName;
     private final long requestQuantity;
 
     public OrderInfo(String input) {
         validInput(input);
         String[] parsedInput = parseNameAndQuantity(input);
-        this.productName = parsedInput[NAME_IDX];
+        this.productName = ProductName.create(parsedInput[NAME_IDX]);
         this.requestQuantity = parseQuantity(parsedInput[QUANTITY_IDX]);
     }
 
-    public OrderInfo(String productName, long requestQuantity) {
+    public OrderInfo(ProductName productName, long requestQuantity) {
         this.productName = productName;
         this.requestQuantity = requestQuantity;
     }
 
-    public static OrderInfo of(String productName, long requestQuantity) {
+    public static OrderInfo of(ProductName productName, long requestQuantity) {
         return new OrderInfo(productName, requestQuantity);
     }
 
@@ -44,8 +45,8 @@ public class OrderInfo {
         return new OrderInfo(input);
     }
 
-    protected static Map<String, Long> sumQuantityByProduct(List<OrderInfo> orderInfos) {
-        Map<String, Long> purchaseCountMap = new LinkedHashMap<>();
+    protected static Map<ProductName, Long> sumQuantityByProduct(List<OrderInfo> orderInfos) {
+        Map<ProductName, Long> purchaseCountMap = new LinkedHashMap<>();
 
         orderInfos.forEach(
                 orderInfo -> purchaseCountMap.merge(orderInfo.productName, orderInfo.requestQuantity,
@@ -129,7 +130,7 @@ public class OrderInfo {
         return OPEN_BRACKET + productName + SEPARATOR + requestQuantity + CLOSE_BRACKET;
     }
 
-    public String getProductName() {
+    public ProductName getProductName() {
         return productName;
     }
 

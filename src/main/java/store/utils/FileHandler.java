@@ -12,6 +12,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import store.domain.vo.ProductName;
 import store.dto.ProductDto;
 import store.dto.ProductDtos;
 import store.dto.PromotionDto;
@@ -95,7 +96,7 @@ public class FileHandler {
             long quantity = Long.parseLong(splitLine[2]);
             String promotionName = parsePromotionName(splitLine[3]);
 
-            return new ProductDto(name, price, quantity, promotionName);
+            return new ProductDto(ProductName.create(name), price, quantity, promotionName);
         } catch (NumberFormatException e) {
             throw new InvalidFormatException(INVALID_FILE_FORMAT.getMessage());
         }

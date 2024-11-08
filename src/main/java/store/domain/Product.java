@@ -7,6 +7,7 @@ import static store.utils.Constants.SPACE_BAR;
 
 import java.util.Objects;
 import java.util.StringJoiner;
+import store.domain.vo.ProductName;
 import store.exception.InvalidFormatException;
 import store.utils.StringUtils;
 
@@ -15,19 +16,19 @@ public class Product {
     private static final String CURRENCY_UNIT = "원";
     private static final String DIVIDER = "-";
 
-    private final String name;
+    private final ProductName name;
     private final long price;
     private final Stock stock;
     private Promotion promotion;
 
-    public Product(String name, long price, Promotion promotion) {
+    public Product(ProductName name, long price, Promotion promotion) {
         this.name = name;
         this.price = price;
         this.stock = new Stock();
         updatePromotion(promotion);
     }
 
-    public Product(String name, long price, Stock stock, Promotion promotion) {
+    public Product(ProductName name, long price, Stock stock, Promotion promotion) {
         this.name = name;
         this.price = price;
         this.stock = stock;
@@ -100,7 +101,7 @@ public class Product {
     private String promotionStatus() {
         StringJoiner spaceBarJoiner = new StringJoiner(SPACE_BAR);
         return spaceBarJoiner.add(DIVIDER)
-                .add(name)
+                .add(name.value())
                 .add(priceString())
                 .add(stock.toPromotionCountString())
                 .add(promotion.toString())
@@ -110,7 +111,7 @@ public class Product {
     private String normalStatus() {
         StringJoiner spaceBarJoiner = new StringJoiner(SPACE_BAR);
         return spaceBarJoiner.add(DIVIDER)
-                .add(name)
+                .add(name.value())
                 .add(priceString())
                 .add(stock.toNormalCountString())
                 .toString();

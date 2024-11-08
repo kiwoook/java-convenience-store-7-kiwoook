@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import store.config.StoreConfig;
 import store.domain.Product;
 import store.domain.Stock;
+import store.domain.vo.ProductName;
 import store.dto.ProductDto;
 
 class StoreServiceTest {
@@ -21,9 +22,10 @@ class StoreServiceTest {
     @ValueSource(longs = {1, 100, 100000, 100000000})
     void test1(long quantity) {
         // given
-        ProductDto productDto = new ProductDto("제품", 1000, quantity, null);
+        ProductName productName = new ProductName("제품");
+        ProductDto productDto = new ProductDto(productName, 1000, quantity, null);
         Stock stock = new Stock(quantity, 0);
-        Product expected = new Product("제품", 1000, stock, null);
+        Product expected = new Product(productName, 1000, stock, null);
 
         // when
         Product result = storeService.createProduct(productDto);

@@ -1,5 +1,6 @@
 package store.viewer;
 
+import store.domain.vo.ProductName;
 import store.enums.PromptMessage;
 
 public interface InputViewer {
@@ -8,7 +9,7 @@ public interface InputViewer {
 
     String getInput();
 
-    void promptFreeItem(String productName, long freeQuantity);
+    void promptFreeItem(ProductName productName, long freeQuantity);
 
-    void promptNonDiscount(String productName, long additionalQuantity);
+    void promptNonDiscount(ProductName productName, long additionalQuantity);
 }
