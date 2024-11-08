@@ -81,7 +81,7 @@ public class StoreServiceImpl implements StoreService {
         return product;
     }
 
-    public Product createPromotionProduct(ProductDto productDto, LocalDate currentDate) {
+    private Product createPromotionProduct(ProductDto productDto, LocalDate currentDate) {
         Promotion promotion = getPromotion(productDto.promotionName());
 
         if (!promotion.isValidPromotion(currentDate)) {

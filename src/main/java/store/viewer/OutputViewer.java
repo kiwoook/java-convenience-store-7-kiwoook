@@ -8,4 +8,6 @@ public interface OutputViewer {
     void printError(Exception exception);
 
     void printResult(Message message);
+
+    void printExplain();
 }

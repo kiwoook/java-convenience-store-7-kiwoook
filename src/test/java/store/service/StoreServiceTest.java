@@ -10,7 +10,6 @@ import store.config.StoreConfig;
 import store.domain.Product;
 import store.domain.Stock;
 import store.dto.ProductDto;
-import store.service.impl.ClearService;
 
 class StoreServiceTest {
 

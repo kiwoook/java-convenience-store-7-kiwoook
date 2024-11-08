@@ -34,13 +34,13 @@ public class StoreConfig {
     private static final SingleRepository<OrderInfos> purchaseInfosRepository = new PurchaseInfosRepository();
     private static final ListRepository<OrderVerification> purchaseVerificationRepository = new PurchaseVerificationRepository();
 
-    private static final ClearService clearService = new ClearService(productMapRepository,
+    private static final store.service.ClearService clearService = new ClearService(productMapRepository,
             purchaseVerificationRepository, promotionMapRepository);
 
     private static final StoreService storeService = new StoreServiceImpl(productMapRepository,
             promotionMapRepository,
             fileHandler);
-    private static final StoreController storeController = new StoreController(storeService, clearService, inputViewer,
+    private static final StoreController storeController = new StoreController(storeService, clearService,
             outputViewer);
 
     private static final PurchaseService purchaseService = new PurchaseServiceImpl(purchaseInfosRepository,
@@ -59,7 +59,7 @@ public class StoreConfig {
         return storeService;
     }
 
-    public static ClearService getClearService() {
+    public static store.service.ClearService getClearService() {
         return clearService;
     }
 

@@ -22,14 +22,14 @@ public class PurchaseServiceImpl implements PurchaseService {
 
     private final SingleRepository<OrderInfos> orderInfosRepository;
     private final MapRepository<Product> productMapRepository;
-    private final ListRepository<OrderVerification> purchaseVerificationRepository;
+    private final ListRepository<OrderVerification> orderVerificationRepository;
 
     public PurchaseServiceImpl(SingleRepository<OrderInfos> orderInfosRepository,
                                MapRepository<Product> productMapRepository,
-                               ListRepository<OrderVerification> purchaseVerificationRepository) {
+                               ListRepository<OrderVerification> orderVerificationRepository) {
         this.orderInfosRepository = orderInfosRepository;
         this.productMapRepository = productMapRepository;
-        this.purchaseVerificationRepository = purchaseVerificationRepository;
+        this.orderVerificationRepository = orderVerificationRepository;
     }
 
     @Override
@@ -57,7 +57,7 @@ public class PurchaseServiceImpl implements PurchaseService {
     public void processQuantity(OrderConfirmDto orderConfirmDto) {
         OrderVerification verification = OrderVerification.from(orderConfirmDto);
 
-        purchaseVerificationRepository.save(verification);
+        orderVerificationRepository.save(verification);
     }
 
 
@@ -65,13 +65,13 @@ public class PurchaseServiceImpl implements PurchaseService {
     public void processProblemQuantity(OrderConfirmDto orderConfirmDto, Confirmation confirmation) {
         OrderVerification verification = OrderVerification.of(orderConfirmDto, confirmation);
 
-        purchaseVerificationRepository.save(verification);
+        orderVerificationRepository.save(verification);
     }
 
 
     @Override
     public Message getReceipt(Confirmation membershipConfirmation) {
-        List<OrderVerification> orderVerifications = purchaseVerificationRepository.getAll();
+        List<OrderVerification> orderVerifications = orderVerificationRepository.getAll();
         Receipt receipt = Receipt.create();
 
         orderVerifications.forEach(purchaseVerification -> {

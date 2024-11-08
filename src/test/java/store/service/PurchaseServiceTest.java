@@ -15,14 +15,13 @@ import store.domain.Stock;
 import store.repository.impl.ProductMapRepository;
 import store.repository.impl.PurchaseInfosRepository;
 import store.repository.impl.PurchaseVerificationRepository;
-import store.service.impl.ClearService;
 import store.service.impl.PurchaseServiceImpl;
 
 class PurchaseServiceTest {
 
     private ProductMapRepository productRepository;
     private PurchaseServiceImpl purchaseService;
-    private ClearService clearService = StoreConfig.getClearService();
+    private static final ClearService clearService = StoreConfig.getClearService();
 
     @BeforeEach
     void setUp() {
@@ -92,7 +91,7 @@ class PurchaseServiceTest {
     }
 
     @AfterEach
-    void cleanUp(){
+    void cleanUp() {
         clearService.clearFile();
         clearService.clearOrder();
     }
