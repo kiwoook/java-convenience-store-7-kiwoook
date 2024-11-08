@@ -35,7 +35,7 @@ public class StoreServiceImpl implements StoreService {
     public void savePromotion() throws IOException {
         PromotionDtos promotionDtos = fileHandler.readPromotionFile();
 
-        for (PromotionDto promotionDto : promotionDtos.getPromotionDtoList()) {
+        for (PromotionDto promotionDto : promotionDtos.items()) {
             Promotion promotion = promotionDto.toPromotion();
             promotionMapRepository.save(promotionDto.name(), promotion);
         }
@@ -69,7 +69,7 @@ public class StoreServiceImpl implements StoreService {
         }
 
         LocalDate currentDate = getCurrentDate();
-        return createPromotionProduct(productDto,currentDate );
+        return createPromotionProduct(productDto,currentDate);
 
     }
 

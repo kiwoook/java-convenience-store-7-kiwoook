@@ -28,4 +28,21 @@ class ProductMapRepositoryTest {
         assertThat(products).containsExactly(product1, product2);
     }
 
+    @Test
+    @DisplayName("리스트 저장 후 비어지는지 테스트")
+    void test2(){
+        // given
+        Product product1 = new Product("apple", 1000, null);
+        Product product2 = new Product("banana", 500, null);
+        productMapRepository.save("apple", product1);
+        productMapRepository.save("banana", product2);
+
+        // when
+        productMapRepository.clear();
+        List<Product> result = productMapRepository.getAll();
+
+        // then
+        assertThat(result).isEmpty();
+    }
+
 }

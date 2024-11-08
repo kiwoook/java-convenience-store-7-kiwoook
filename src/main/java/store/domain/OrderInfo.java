@@ -10,22 +10,25 @@ import store.dto.OrderConfirmDto;
 
 public class OrderInfo {
 
-    private static final int MIN_LENGTH = 5;
     private static final String OPEN_BRACKET = "[";
     private static final String CLOSE_BRACKET = "]";
     private static final String SEPARATOR = "-";
+
+    private static final int MIN_LENGTH = 5;
     private static final int BRACKET_OFFSET = 1;
     private static final int NAME_IDX = 0;
     private static final int QUANTITY_IDX = 1;
     private static final int SPLIT_LENGTH = 2;
     private static final int ZERO = 0;
 
-    private String productName;
-    private long requestQuantity;
+    private final String productName;
+    private final long requestQuantity;
 
     public OrderInfo(String input) {
         validInput(input);
-        parseNameAndQuantity(input);
+        String[] parsedInput = parseNameAndQuantity(input);
+        this.productName = parsedInput[NAME_IDX];
+        this.requestQuantity = parseQuantity(parsedInput[QUANTITY_IDX]);
     }
 
     public OrderInfo(String productName, long requestQuantity) {
@@ -33,11 +36,15 @@ public class OrderInfo {
         this.requestQuantity = requestQuantity;
     }
 
+    public static OrderInfo of(String productName, long requestQuantity) {
+        return new OrderInfo(productName, requestQuantity);
+    }
+
     public static OrderInfo create(String input) {
         return new OrderInfo(input);
     }
 
-    protected static Map<String, Long> totalPurchaseCount(List<OrderInfo> orderInfos) {
+    protected static Map<String, Long> sumQuantityByProduct(List<OrderInfo> orderInfos) {
         Map<String, Long> purchaseCountMap = new LinkedHashMap<>();
 
         orderInfos.forEach(
@@ -57,14 +64,13 @@ public class OrderInfo {
         product.validStock(this.requestQuantity);
     }
 
-    public void parseNameAndQuantity(String input) {
+    private String[] parseNameAndQuantity(String input) {
         String trimInput = trimBrackets(input);
         validTrimInput(trimInput);
         String[] splitInput = trimInput.split(SEPARATOR);
         validSplitInput(splitInput);
 
-        this.productName = splitInput[NAME_IDX];
-        this.requestQuantity = parseQuantity(splitInput[QUANTITY_IDX]);
+        return splitInput;
     }
 
     private void validTrimInput(String trimInput) {
@@ -123,8 +129,7 @@ public class OrderInfo {
         return OPEN_BRACKET + productName + SEPARATOR + requestQuantity + CLOSE_BRACKET;
     }
 
-    @Override
-    public String toString() {
+    public String getProductName() {
         return productName;
     }
 

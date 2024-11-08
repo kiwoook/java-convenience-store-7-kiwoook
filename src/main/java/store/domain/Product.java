@@ -5,10 +5,10 @@ import static store.enums.ErrorMessage.INVALID_FILE_FORMAT;
 import static store.utils.Constants.ENTER;
 import static store.utils.Constants.SPACE_BAR;
 
-import java.text.DecimalFormat;
 import java.util.Objects;
 import java.util.StringJoiner;
 import store.exception.InvalidFormatException;
+import store.utils.StringUtils;
 
 public class Product {
 
@@ -49,18 +49,18 @@ public class Product {
     }
 
     public void validPrice(long dtoPrice) {
-        if (this.price != dtoPrice) {
+        if (price != dtoPrice) {
             throw new InvalidFormatException(INVALID_FILE_FORMAT.getMessage());
         }
     }
 
 
     public void addNormalQuantity(long quantity) {
-        this.stock.addNormalProduct(quantity);
+        stock.addNormalProduct(quantity);
     }
 
     public void addPromotionQuantity(long quantity) {
-        this.stock.addPromotionProduct(quantity);
+        stock.addPromotionProduct(quantity);
     }
 
     public long calculateRequiredQuantity(long requestQuantity) {
@@ -68,11 +68,7 @@ public class Product {
     }
 
     public long sumOriginalPrice(long requestQuantity) {
-        if (promotion == null) {
-            return requestQuantity * price;
-        }
-
-        long originalQuantity = this.stock.calculateOriginalPriceQuantity(requestQuantity, promotion);
+        long originalQuantity = stock.calculateOriginalPriceQuantity(requestQuantity, promotion);
 
         return -originalQuantity * price;
     }
@@ -89,7 +85,6 @@ public class Product {
         stock.applyQuantity(requestQuantity);
     }
 
-
     @Override
     public String toString() {
         StringJoiner enterJoiner = new StringJoiner(ENTER);
@@ -105,7 +100,7 @@ public class Product {
     private String promotionStatus() {
         StringJoiner spaceBarJoiner = new StringJoiner(SPACE_BAR);
         return spaceBarJoiner.add(DIVIDER)
-                .add(this.name)
+                .add(name)
                 .add(priceString())
                 .add(stock.toPromotionCountString())
                 .add(promotion.toString())
@@ -115,16 +110,14 @@ public class Product {
     private String normalStatus() {
         StringJoiner spaceBarJoiner = new StringJoiner(SPACE_BAR);
         return spaceBarJoiner.add(DIVIDER)
-                .add(this.name)
+                .add(name)
                 .add(priceString())
                 .add(stock.toNormalCountString())
                 .toString();
     }
 
     private String priceString() {
-        DecimalFormat format = new DecimalFormat("#,###");
-
-        return format.format(price) + CURRENCY_UNIT;
+        return StringUtils.numberFormat(price) + CURRENCY_UNIT;
     }
 
     @Override

@@ -14,8 +14,8 @@ import store.service.impl.ClearService;
 
 class StoreServiceTest {
 
-    private StoreService storeService = StoreConfig.getStoreService();
-    private ClearService clearService = StoreConfig.getClearService();
+    private final StoreService storeService = StoreConfig.getStoreService();
+    private final ClearService clearService = StoreConfig.getClearService();
 
     @ParameterizedTest
     @DisplayName("일반 재고가 추가되는지 확인하는 테스트")

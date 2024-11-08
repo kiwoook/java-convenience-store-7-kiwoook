@@ -6,9 +6,11 @@ import static store.utils.Constants.TAB;
 
 import java.util.StringJoiner;
 import store.enums.Confirmation;
-import store.utils.StringFormat;
+import store.utils.StringUtils;
 
 public class CalculatePrice {
+
+    private static final String DIVIDER = "====================================";
 
     private static final long MAX_PROMOTION_DISCOUNT = 8000;
     private static final double DISCOUNT_RATE = 0.3;
@@ -19,7 +21,14 @@ public class CalculatePrice {
     private long totalPromotionDiscount;
     private long totalOriginalPrice;
 
-    public CalculatePrice() {
+    protected CalculatePrice(long totalCount, long totalPrice, long totalPromotionDiscount, long totalOriginalPrice) {
+        this.totalCount = totalCount;
+        this.totalPrice = totalPrice;
+        this.totalPromotionDiscount = totalPromotionDiscount;
+        this.totalOriginalPrice = totalOriginalPrice;
+    }
+
+    private CalculatePrice() {
         this.totalPrice = 0;
         this.totalPromotionDiscount = 0;
         this.totalOriginalPrice = 0;
@@ -31,16 +40,15 @@ public class CalculatePrice {
     }
 
     public void calculate(OrderVerification verification, Product product) {
-        this.totalCount += verification.getRequestQuantity();
+        this.totalCount += verification.requestQuantity();
         this.totalPrice += verification.totalPrice(product);
         this.totalPromotionDiscount += verification.totalDiscount(product);
         this.totalOriginalPrice += verification.totalOriginalPrice(product);
     }
 
     public String toMessage(Confirmation confirmation) {
-        StringJoiner joiner = new StringJoiner(ENTER);
-
-        return joiner.add("====================================")
+        return new StringJoiner(ENTER)
+                .add(DIVIDER)
                 .add(toTotal())
                 .add(toPromotionDiscount())
                 .add(toMembershipDiscount(confirmation))
@@ -48,17 +56,7 @@ public class CalculatePrice {
                 .toString();
     }
 
-    private String toFinalPrice(Confirmation confirmation) {
-        StringJoiner joiner = new StringJoiner(TAB);
-        return joiner.add("내실돈")
-                .add(BLANK).add(BLANK).add(BLANK)
-                .add(StringFormat.number(
-                        totalPrice - totalPromotionDiscount - calculateMembershipDiscount(confirmation)))
-                .toString();
-    }
-
-
-    private long calculateMembershipDiscount(Confirmation confirmation) {
+    protected long calculateMembershipDiscount(Confirmation confirmation) {
         if (confirmation.equals(Confirmation.NO)) {
             return 0L;
         }
@@ -66,13 +64,21 @@ public class CalculatePrice {
         return Math.min(membershipDiscount, MAX_PROMOTION_DISCOUNT);
     }
 
+    private String toFinalPrice(Confirmation confirmation) {
+        return new StringJoiner(TAB)
+                .add("내실돈")
+                .add(BLANK).add(BLANK).add(BLANK)
+                .add(StringUtils.numberFormat(
+                        totalPrice - totalPromotionDiscount - calculateMembershipDiscount(confirmation)))
+                .toString();
+    }
 
     private String toTotal() {
         return new StringJoiner(TAB)
                 .add("총구매액")
                 .add(BLANK)
-                .add(StringFormat.number(this.totalCount))
-                .add(StringFormat.number(this.totalPrice))
+                .add(StringUtils.numberFormat(this.totalCount))
+                .add(StringUtils.numberFormat(this.totalPrice))
                 .toString();
     }
 
@@ -80,7 +86,7 @@ public class CalculatePrice {
         return new StringJoiner(TAB)
                 .add("행사할인")
                 .add(BLANK).add(BLANK)
-                .add("-" + StringFormat.number(this.totalPromotionDiscount))
+                .add("-" + StringUtils.numberFormat(this.totalPromotionDiscount))
                 .toString();
     }
 
@@ -88,7 +94,7 @@ public class CalculatePrice {
         return new StringJoiner(TAB)
                 .add("멤버십 할인")
                 .add(BLANK).add(BLANK)
-                .add("-" + StringFormat.number(calculateMembershipDiscount(confirmation)))
+                .add("-" + StringUtils.numberFormat(calculateMembershipDiscount(confirmation)))
                 .toString();
     }
 }

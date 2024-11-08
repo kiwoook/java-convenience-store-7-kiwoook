@@ -1,24 +1,24 @@
 package store.domain;
 
+import static store.enums.ErrorMessage.INVALID_FILE_FORMAT;
+
 import java.time.LocalDate;
 import java.util.Objects;
+import store.domain.vo.PromotionBundle;
+import store.domain.vo.PromotionDate;
+import store.exception.InvalidFormatException;
 
 public class Promotion {
 
-    private static final int ONE_DAY_OFFSET = 1;
-
     private final String name;
-    private final long buyQuantity;
-    private final long getQuantity;
-    private final LocalDate startDate;
-    private final LocalDate endDate;
+    private final PromotionDate promotionDate;
+    private final PromotionBundle promotionBundle;
 
     public Promotion(String name, long buyQuantity, long getQuantity, LocalDate startDate, LocalDate endDate) {
+        validPromotionQuantity(buyQuantity, getQuantity);
         this.name = name;
-        this.buyQuantity = buyQuantity;
-        this.getQuantity = getQuantity;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.promotionDate = new PromotionDate(startDate, endDate);
+        this.promotionBundle = new PromotionBundle(buyQuantity, getQuantity);
     }
 
     public static Promotion create(String name, long buy, long get, LocalDate startDate, LocalDate endDate) {
@@ -26,29 +26,33 @@ public class Promotion {
     }
 
     public boolean isValidPromotion(LocalDate currentDate) {
-        return currentDate.isAfter(startDate.minusDays(ONE_DAY_OFFSET)) && currentDate.isBefore(
-                endDate.plusDays(ONE_DAY_OFFSET));
+        return promotionDate.isValidPromotion(currentDate);
     }
 
-    public long combinedQuantity() {
-        return buyQuantity + getQuantity;
+    protected long bundleQuantity() {
+        return promotionBundle.getQuantity() + promotionBundle.buyQuantity();
     }
 
-    protected long totalBuyQuantity(long promotionBundle) {
-        return promotionBundle * buyQuantity;
+    protected long totalBuyQuantity(long promotionBundleCount) {
+        return promotionBundleCount * promotionBundle.buyQuantity();
     }
 
-    protected long totalGetQuantity(long promotionBundle) {
-        return promotionBundle * getQuantity;
+    protected long totalGetQuantity(long promotionBundleCount) {
+        return promotionBundleCount * promotionBundle.getQuantity();
     }
 
     protected long getPromotionalGiftQuantity(long requestQuantity) {
-        if ((requestQuantity + getQuantity) % combinedQuantity() == 0) {
-            return getQuantity;
+        if ((requestQuantity + promotionBundle.getQuantity()) % bundleQuantity() == 0) {
+            return promotionBundle.getQuantity();
         }
         return 0L;
     }
 
+    private void validPromotionQuantity(Long buyQuantity, Long getQuantity) {
+        if (buyQuantity == 0 || getQuantity == 0) {
+            throw new InvalidFormatException(INVALID_FILE_FORMAT.getMessage());
+        }
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -59,15 +63,13 @@ public class Promotion {
             return false;
         }
         Promotion promotion = (Promotion) o;
-        return buyQuantity == promotion.buyQuantity && getQuantity == promotion.getQuantity && Objects.equals(name,
-                promotion.name)
-                && Objects.equals(startDate, promotion.startDate) && Objects.equals(endDate,
-                promotion.endDate);
+        return Objects.equals(name, promotion.name) && Objects.equals(promotionDate,
+                promotion.promotionDate) && Objects.equals(promotionBundle, promotion.promotionBundle);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, buyQuantity, getQuantity, startDate, endDate);
+        return Objects.hash(name, promotionDate, promotionBundle);
     }
 
     @Override

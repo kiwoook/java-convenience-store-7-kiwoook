@@ -21,12 +21,12 @@ public class Receipt {
     private final List<String> discountStatus;
 
     private Receipt() {
-        this.calculatePrice = new CalculatePrice();
+        this.calculatePrice = CalculatePrice.create();
         this.orderStatus = new ArrayList<>();
         this.discountStatus = new ArrayList<>();
     }
 
-    public static Receipt create(){
+    public static Receipt create() {
         return new Receipt();
     }
 

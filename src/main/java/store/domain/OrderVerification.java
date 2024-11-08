@@ -3,23 +3,14 @@ package store.domain;
 import static store.utils.Constants.BLANK;
 import static store.utils.Constants.TAB;
 
-import java.util.Objects;
 import java.util.StringJoiner;
 import store.dto.OrderConfirmDto;
 import store.enums.Confirmation;
-import store.utils.StringFormat;
+import store.utils.StringUtils;
 
-public class OrderVerification {
+public record OrderVerification(String productName, long requestQuantity) {
 
     private static final long ZERO = 0;
-
-    private final String name;
-    private final long requestQuantity;
-
-    public OrderVerification(String name, long requestQuantity) {
-        this.name = name;
-        this.requestQuantity = requestQuantity;
-    }
 
     public static OrderVerification from(OrderConfirmDto confirmDto) {
         return new OrderVerification(confirmDto.name(), confirmDto.requestQuantity());
@@ -40,17 +31,9 @@ public class OrderVerification {
         return confirmDto.requestQuantity();
     }
 
-    public long getGiftQuantity(Product product) {
-        return product.calculateGiftQuantity(this.requestQuantity);
-    }
-
     public String totalPriceByProduct(Product product) {
-        long totalPrice = product.calculateSumPrice(this.requestQuantity);
-        return StringFormat.number(totalPrice);
-    }
-
-    public long getRequestQuantity() {
-        return this.requestQuantity;
+        long totalPrice = product.calculateSumPrice(requestQuantity);
+        return StringUtils.numberFormat(totalPrice);
     }
 
     public String toQuantityString() {
@@ -61,9 +44,9 @@ public class OrderVerification {
     public String getStatus(Product product) {
         StringJoiner joiner = new StringJoiner(TAB);
 
-        return joiner.add(this.name)
+        return joiner.add(productName)
                 .add(BLANK)
-                .add(this.toQuantityString())
+                .add(toQuantityString())
                 .add(BLANK)
                 .add(totalPriceByProduct(product))
                 .toString();
@@ -71,56 +54,38 @@ public class OrderVerification {
 
     public String getDiscountStatus(Product product) {
         StringJoiner joiner = new StringJoiner(TAB);
-        long giftQuantity = product.calculateGiftQuantity(this.requestQuantity);
+        long giftQuantity = product.calculateGiftQuantity(requestQuantity);
 
         if (giftQuantity == 0) {
             return null;
         }
 
-        return joiner.add(this.name)
-                .add(BLANK)
+        return joiner.add(productName + TAB)
                 .add(String.valueOf(giftQuantity))
                 .toString();
     }
 
     public long totalOriginalPrice(Product product) {
-        return product.sumOriginalPrice(this.requestQuantity);
+        return product.sumOriginalPrice(requestQuantity);
     }
 
     public long totalPrice(Product product) {
-        return product.calculateSumPrice(this.requestQuantity);
+        return product.calculateSumPrice(requestQuantity);
     }
 
     public long totalDiscount(Product product) {
-        long giftQuantity = product.calculateGiftQuantity(this.requestQuantity);
+        long giftQuantity = product.calculateGiftQuantity(requestQuantity);
 
         return product.calculateSumPrice(giftQuantity);
     }
 
     public void apply(Product product) {
-        product.applyStock(this.requestQuantity);
+        product.applyStock(requestQuantity);
     }
 
     @Override
-
     public String toString() {
-        return name;
+        return productName;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        OrderVerification that = (OrderVerification) o;
-        return requestQuantity == that.requestQuantity && Objects.equals(name, that.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, requestQuantity);
-    }
 }

@@ -116,8 +116,20 @@ class StockTest {
 
             assertThat(result).isEqualTo(-expected);
         }
-
-
     }
+
+    @Test
+    @DisplayName("프로모션이 없다면 요청 개수는 원가 개수이다")
+    void test9() {
+        long maxExpected = 1000000;
+        Stock stock = new Stock(maxExpected, 0);
+
+        for (long expected = 1; expected < maxExpected; expected++) {
+            long result = -stock.calculateOriginalPriceQuantity(expected, null);
+
+            assertThat(result).isEqualTo(expected);
+        }
+    }
+
 
 }

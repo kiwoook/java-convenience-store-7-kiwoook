@@ -13,23 +13,21 @@ public class Application {
 
     public static void main(String[] args) throws IOException {
         storeController.init();
-
         try {
-            boolean isRetry = true;
-            while (isRetry) {
-                storeController.explain();
-
-                purchaseController.buy();
-                purchaseController.check();
-                purchaseController.printReceipt();
-                storeController.clearOrder();
-                isRetry = purchaseController.retry();
-            }
+            execute();
         } finally {
             Console.close();
             storeController.clearFile();
         }
+    }
 
-
+    private static void execute() {
+        boolean isRetry = true;
+        while (isRetry) {
+            storeController.explain();
+            purchaseController.purchase();
+            storeController.clearOrder();
+            isRetry = purchaseController.retry();
+        }
     }
 }

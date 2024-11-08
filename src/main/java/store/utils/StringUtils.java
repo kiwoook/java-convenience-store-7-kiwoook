@@ -2,14 +2,15 @@ package store.utils;
 
 import java.text.DecimalFormat;
 
-public class StringFormat {
+public class StringUtils {
 
-    private StringFormat() {
+    private StringUtils() {
     }
 
-    public static String number(long price) {
+    public static String numberFormat(long price) {
         DecimalFormat decimalFormat = new DecimalFormat("#,###");
 
         return decimalFormat.format(price);
     }
+
 }

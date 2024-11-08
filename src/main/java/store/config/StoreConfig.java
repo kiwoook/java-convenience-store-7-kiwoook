@@ -26,8 +26,8 @@ import store.viewer.impl.OutputViewerImpl;
 
 public class StoreConfig {
     private static final FileHandler fileHandler = new FileHandler();
-    private static final InputViewer input_viewer = new InputViewerImpl();
-    private static final OutputViewer output_viewer = new OutputViewerImpl();
+    private static final InputViewer inputViewer = new InputViewerImpl();
+    private static final OutputViewer outputViewer = new OutputViewerImpl();
 
     private static final MapRepository<Product> productMapRepository = new ProductMapRepository();
     private static final MapRepository<Promotion> promotionMapRepository = new PromotionMapRepository();
@@ -40,20 +40,19 @@ public class StoreConfig {
     private static final StoreService storeService = new StoreServiceImpl(productMapRepository,
             promotionMapRepository,
             fileHandler);
-    private static final StoreController storeController = new StoreController(storeService, clearService, input_viewer,
-            output_viewer);
+    private static final StoreController storeController = new StoreController(storeService, clearService, inputViewer,
+            outputViewer);
 
     private static final PurchaseService purchaseService = new PurchaseServiceImpl(purchaseInfosRepository,
             productMapRepository, purchaseVerificationRepository);
-    private static final PurchaseController purchaseController = new PurchaseController(purchaseService, input_viewer,
-            output_viewer);
+    private static final PurchaseController purchaseController = new PurchaseController(purchaseService, inputViewer,
+            outputViewer);
 
     private StoreConfig() {
     }
 
-
     public static OutputViewer getOutputViewer() {
-        return output_viewer;
+        return outputViewer;
     }
 
     public static StoreService getStoreService() {

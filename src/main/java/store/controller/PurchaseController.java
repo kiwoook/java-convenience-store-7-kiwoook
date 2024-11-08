@@ -25,6 +25,12 @@ public class PurchaseController {
         this.outputViewer = outputViewer;
     }
 
+    public void purchase(){
+        buy();
+        check();
+        printReceipt();
+    }
+
     public void buy() {
         inputViewer.promptMessage(BUY);
         RecoveryUtils.executeWithRetry(inputViewer::getInput, purchaseService::create);

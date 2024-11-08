@@ -7,38 +7,40 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 public class OrderInfos {
 
     private static final String SEPARATOR = ",";
-    private final List<OrderInfo> orderInfoList;
+    private final List<OrderInfo> items;
 
     public OrderInfos() {
-        this.orderInfoList = new ArrayList<>();
+        this.items = new ArrayList<>();
     }
 
-    public OrderInfos(String input) {
+    private OrderInfos(String input) {
         validInput(input);
-        this.orderInfoList = mergePurchaseInfos(input);
+        this.items = mergePurchaseInfos(input);
     }
 
     public static OrderInfos create(String input) {
         return new OrderInfos(input);
     }
 
-    private List<OrderInfo> mergePurchaseInfos(String input) {
-        List<OrderInfo> orderInfos = parsePurchaseInfos(input);
-        return OrderInfo.totalPurchaseCount(orderInfos)
-                .entrySet()
-                .stream()
-                .map(entry -> new OrderInfo(entry.getKey(), entry.getValue()))
-                .toList();
+    public void forEach(Consumer<OrderInfo> purchaseInfo) {
+        items.forEach(purchaseInfo);
     }
 
-    private List<OrderInfo> parsePurchaseInfos(String input) {
-        return Arrays.stream(input.split(SEPARATOR))
-                .map(OrderInfo::create)
-                .toList();
+    public Stream<OrderInfo> stream() {
+        return this.items.stream();
+    }
+
+    protected void addPurchaseInfo(OrderInfo orderInfo) {
+        items.add(orderInfo);
+    }
+
+    protected int size() {
+        return items.size();
     }
 
     private void validInput(String input) {
@@ -54,17 +56,22 @@ public class OrderInfos {
         }
     }
 
-    public void addPurchaseInfo(OrderInfo orderInfo) {
-        orderInfoList.add(orderInfo);
+    private List<OrderInfo> mergePurchaseInfos(String input) {
+        List<OrderInfo> orderInfos = parsePurchaseInfos(input);
+        return OrderInfo.sumQuantityByProduct(orderInfos)
+                .entrySet()
+                .stream()
+                .map(entry -> OrderInfo.of(entry.getKey(), entry.getValue()))
+                .toList();
     }
 
-    public void forEach(Consumer<OrderInfo> purchaseInfo) {
-        orderInfoList.forEach(purchaseInfo);
+
+    private List<OrderInfo> parsePurchaseInfos(String input) {
+        return Arrays.stream(input.split(SEPARATOR))
+                .map(OrderInfo::create)
+                .toList();
     }
 
-    public int size() {
-        return orderInfoList.size();
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -75,11 +82,11 @@ public class OrderInfos {
             return false;
         }
         OrderInfos that = (OrderInfos) o;
-        return Objects.equals(orderInfoList, that.orderInfoList);
+        return Objects.equals(items, that.items);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(orderInfoList);
+        return Objects.hashCode(items);
     }
 }

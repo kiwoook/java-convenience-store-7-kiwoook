@@ -18,7 +18,7 @@ class OrderInfosTest {
     @ValueSource(strings = {"[콜라-10][사이다-3]", "[-10],[사이다-3]", "[콜라-10],[사이다-3],",
             "[콜라-10],[사이다-3],", "콜라-10,사이다-3", "[콜라-10,사이다-3]",
             "[콜라,사이다-3]", "[콜라-10], 사이다-3", "[콜라-10], [사이다-3]",
-            "[]", "[-]", "[-],[-]", "-","[,,,,,,]"
+            "[]", "[-]", "[-],[-]", "-", "[,,,,,,]"
     })
     void test1(String input) {
 
@@ -36,7 +36,7 @@ class OrderInfosTest {
             delimiter = ':'
     )
     void test2(String input, String result) {
-        OrderInfos purchaseInfos = new OrderInfos(input);
+        OrderInfos purchaseInfos = OrderInfos.create(input);
 
         assertThat(purchaseInfos.size()).isEqualTo(Integer.parseInt(result));
     }
@@ -51,7 +51,7 @@ class OrderInfosTest {
         expect.addPurchaseInfo(orderInfo2);
         expect.addPurchaseInfo(orderInfo1);
 
-        OrderInfos result = new OrderInfos(input);
+        OrderInfos result = OrderInfos.create(input);
 
         assertThat(result.size()).isEqualTo(2);
         assertThat(result).isEqualTo(expect);
