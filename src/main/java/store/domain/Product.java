@@ -120,6 +120,10 @@ public class Product {
         return StringUtils.numberFormat(price) + CURRENCY_UNIT;
     }
 
+    protected String toProductName() {
+        return name.value();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -136,5 +140,21 @@ public class Product {
     @Override
     public int hashCode() {
         return Objects.hash(name, price, stock, promotion);
+    }
+
+    private ProductName getName() {
+        return name;
+    }
+
+    private long getPrice() {
+        return price;
+    }
+
+    private Stock getStock() {
+        return stock;
+    }
+
+    private Promotion getPromotion() {
+        return promotion;
     }
 }

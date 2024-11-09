@@ -14,12 +14,14 @@ class OrderVerificationTest {
     @DisplayName("프로모션 재고 부족으로 구매를 안한다.")
     void test1() {
         ProductName productName = new ProductName("제품");
-        OrderVerification expected = new OrderVerification(productName, 0);
+        Stock stock = new Stock(15, 10);
+        Product product = new Product(productName, 1000, stock, null);
+        OrderVerificationV2 expected = new OrderVerificationV2(product, 0);
 
         OrderConfirmDto confirmDto = new OrderConfirmDto(productName, 10L, -5L);
         Confirmation no = Confirmation.NO;
 
-        OrderVerification result = OrderVerification.of(confirmDto, no);
+        OrderVerificationV2 result = OrderVerificationV2.of(product, confirmDto, no);
 
         assertEquals(expected, result);
     }
@@ -28,13 +30,14 @@ class OrderVerificationTest {
     @DisplayName("프로모션을 받는다.")
     void test2() {
         ProductName productName = new ProductName("제품");
-
-        OrderVerification expected = new OrderVerification(productName, 15);
+        Stock stock = new Stock(0, 15);
+        Product product = new Product(productName, 1000, stock, null);
+        OrderVerificationV2 expected = new OrderVerificationV2(product, 15);
 
         OrderConfirmDto confirmDto = new OrderConfirmDto(productName, 10L, 5L);
         Confirmation no = Confirmation.YES;
 
-        OrderVerification result = OrderVerification.of(confirmDto, no);
+        OrderVerificationV2 result = OrderVerificationV2.of(product, confirmDto, no);
 
         assertEquals(expected, result);
     }
@@ -43,14 +46,16 @@ class OrderVerificationTest {
     @DisplayName("상관없이 구매한다.")
     void test3() {
         ProductName productName = new ProductName("제품");
+        Stock stock = new Stock(15, 15);
+        Product product = new Product(productName, 1000, stock, null);
 
-        OrderVerification expected = new OrderVerification(productName, 15);
+        OrderVerificationV2 expected = new OrderVerificationV2(product, 15);
 
         OrderConfirmDto confirmDto1 = new OrderConfirmDto(productName, 15L, 5L);
         OrderConfirmDto confirmDto2 = new OrderConfirmDto(productName, 15L, -5L);
 
-        OrderVerification result1 = OrderVerification.of(confirmDto1, Confirmation.NO);
-        OrderVerification result2 = OrderVerification.of(confirmDto2, Confirmation.YES);
+        OrderVerificationV2 result1 = OrderVerificationV2.of(product, confirmDto1, Confirmation.NO);
+        OrderVerificationV2 result2 = OrderVerificationV2.of(product, confirmDto2, Confirmation.YES);
 
         assertEquals(expected, result1);
         assertEquals(expected, result2);

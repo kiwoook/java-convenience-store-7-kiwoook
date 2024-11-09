@@ -16,7 +16,7 @@ import store.domain.vo.ProductName;
 import store.repository.ProductRepository;
 import store.repository.impl.ProductRepositoryImpl;
 import store.repository.impl.PurchaseInfosRepository;
-import store.repository.impl.PurchaseVerificationRepository;
+import store.repository.impl.OrderVerificationRepositoryImpl;
 import store.service.impl.PurchaseServiceImpl;
 
 class PurchaseServiceTest {
@@ -29,9 +29,9 @@ class PurchaseServiceTest {
     void setUp() {
         productRepository = new ProductRepositoryImpl();
         PurchaseInfosRepository purchaseInfosSingleRepository = new PurchaseInfosRepository();
-        PurchaseVerificationRepository purchaseVerificationRepository = new PurchaseVerificationRepository();
+        OrderVerificationRepositoryImpl orderVerificationRepositoryImpl = new OrderVerificationRepositoryImpl();
         purchaseService = new PurchaseServiceImpl(purchaseInfosSingleRepository,
-                productRepository, purchaseVerificationRepository);
+                productRepository, orderVerificationRepositoryImpl);
     }
 
     @Test
