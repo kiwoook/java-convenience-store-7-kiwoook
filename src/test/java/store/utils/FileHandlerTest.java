@@ -21,7 +21,7 @@ class FileHandlerTest {
         // given
         String[] line = {"탄산2+1", "2", "1", "2024-01-01", "2024-12-31"};
 
-        PromotionDto expect = new PromotionDto("탄산2+1", 2, 1,
+        PromotionDto expect = new PromotionDto("탄산2+1", 2,
                 LocalDate.of(2024, 1, 1),
                 LocalDate.of(2024, 12, 31));
 

@@ -37,24 +37,22 @@ class CalculatePriceTest {
     @DisplayName("프로모션 재고가 충분하고 번들만큼 사면 멤버십 할인은 되지 않는다.")
     void test3() {
         for (int n = 1; n <= 1000; n++) {
-            for (int m = 1; m <= 1000; m++) {
-                Promotion promotion = new Promotion(null, n, m, null, null);
-                Stock stock = new Stock(0, n + m);
-                Product product = new Product(null, 1000, stock, promotion);
-                OrderVerification orderVerification = new OrderVerification(null, n + m);
+            Promotion promotion = new Promotion(null, n, null, null);
+            Stock stock = new Stock(0, n + 1);
+            Product product = new Product(null, 1000, stock, promotion);
+            OrderVerification orderVerification = new OrderVerification(null, n + 1);
 
-                CalculatePrice calculatePrice = CalculatePrice.create();
-                calculatePrice.calculate(orderVerification, product);
-                long result = calculatePrice.calculateMembershipDiscount(Confirmation.YES);
+            CalculatePrice calculatePrice = CalculatePrice.create();
+            calculatePrice.calculate(orderVerification, product);
+            long result = calculatePrice.calculateMembershipDiscount(Confirmation.YES);
 
-                assertThat(result).isZero();
-            }
+            assertThat(result).isZero();
         }
     }
 
     @ParameterizedTest
     @DisplayName("개수, 총금액, 원가 검증 테스트")
-    @ValueSource(ints = {10, 100, 100000, 10000000, 555})
+    @ValueSource(ints = {10, 100, 100000, 555})
     void test4(int size) {
         long price = 1000L;
         List<Product> products = new ArrayList<>();

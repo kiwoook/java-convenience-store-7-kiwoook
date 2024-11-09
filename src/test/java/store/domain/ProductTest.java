@@ -23,8 +23,8 @@ class ProductTest {
     @Test
     @DisplayName("프로모션이 존재하는데 다른 프로모션이 주입되면 에러를 발생한다")
     void test2() {
-        Promotion promotion = new Promotion("1+2", 1, 2, null, null);
-        Promotion promotion2 = new Promotion("2+1", 2, 1, null, null);
+        Promotion promotion = new Promotion("1+2", 1, null, null);
+        Promotion promotion2 = new Promotion("2+1", 2, null, null);
         ProductName productName = ProductName.create("제품");
         Product product = new Product(productName, 1000, promotion);
         assertThrows(InvalidFileFormatException.class, () -> {
@@ -36,7 +36,7 @@ class ProductTest {
     @DisplayName("문자열 반환 테스트")
     void test3() {
         Stock stock = new Stock(10, 10);
-        Promotion promotion = new Promotion("탄산2+1", 2, 1, null, null);
+        Promotion promotion = new Promotion("탄산2+1", 2,  null, null);
         ProductName productName = ProductName.create("콜라");
         Product product = new Product(productName, 1000, stock, promotion);
 
@@ -49,7 +49,7 @@ class ProductTest {
     void test4() {
         // given
         Stock stock = new Stock(0, 9);
-        Promotion promotion = new Promotion("MD추천상품", 1, 1, null, null);
+        Promotion promotion = new Promotion("MD추천상품", 1,  null, null);
         ProductName productName = ProductName.create("오렌지주스");
         Product product = new Product(productName, 1800, stock, promotion);
 

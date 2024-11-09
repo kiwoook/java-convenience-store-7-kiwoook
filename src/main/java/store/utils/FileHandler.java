@@ -82,11 +82,17 @@ public class FileHandler {
         try {
             String name = splitLine[0];
             long buy = Long.parseLong(splitLine[1]);
-            long get = Long.parseLong(splitLine[2]);
+            validGetPromotionQuantity(Long.parseLong(splitLine[2]));
             LocalDate startDate = LocalDate.parse(splitLine[3]);
             LocalDate endDate = LocalDate.parse(splitLine[4]);
-            return new PromotionDto(name, buy, get, startDate, endDate);
+            return new PromotionDto(name, buy, startDate, endDate);
         } catch (NumberFormatException | DateTimeParseException e) {
+            throw new InvalidFileFormatException(INVALID_FILE_FORMAT.getMessage());
+        }
+    }
+
+    private void validGetPromotionQuantity(long getQuantity) {
+        if (getQuantity != 1L) {
             throw new InvalidFileFormatException(INVALID_FILE_FORMAT.getMessage());
         }
     }

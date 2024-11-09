@@ -16,7 +16,7 @@ class StockTest {
         // given
         long requestCnt1 = Long.parseLong(value1);
         long expect = Long.parseLong(value2);
-        Promotion promotion = new Promotion(null, 2, 1, null, null);
+        Promotion promotion = new Promotion(null, 2, null, null);
         Stock stock = new Stock(0, 6);
 
         // when
@@ -32,7 +32,7 @@ class StockTest {
         long requestCnt1 = Long.parseLong(value1);
         long expect = Long.parseLong(value2);
 
-        Promotion promotion = new Promotion(null, 2, 1, null, null);
+        Promotion promotion = new Promotion(null, 2,  null, null);
         Stock stock = new Stock(1, 5);
 
         Long result = stock.problemQuantity(requestCnt1, promotion);
@@ -41,14 +41,14 @@ class StockTest {
     }
 
     @ParameterizedTest
-    @DisplayName("1+100 검증")
+    @DisplayName("1+1 검증")
     @CsvSource(value = {"101:-101", "99:-99", "100:-100", "1:-1"}, delimiter = ':')
     void test3(String value1, String value2) {
         long requestCnt1 = Long.parseLong(value1);
         long expect = Long.parseLong(value2);
 
-        Promotion promotion = new Promotion(null, 1, 100, null, null);
-        Stock stock = new Stock(100, 100);
+        Promotion promotion = new Promotion(null, 1,  null, null);
+        Stock stock = new Stock(100, 1);
 
         Long result = stock.problemQuantity(requestCnt1, promotion);
 
@@ -58,7 +58,7 @@ class StockTest {
     @Test
     @DisplayName("예시 검증: 2+1")
     void test4() {
-        Promotion promotion = new Promotion(null, 2, 1, null, null);
+        Promotion promotion = new Promotion(null, 2,  null, null);
         Stock stock = new Stock(0, 6);
         long requestCnt1 = 2;
         long expect = 1;
@@ -71,7 +71,7 @@ class StockTest {
     @Test
     @DisplayName("예시 검증 : 오렌지주스 1+1")
     void test5() {
-        Promotion promotion = new Promotion(null, 1, 1, null, null);
+        Promotion promotion = new Promotion(null, 1, null, null);
         Stock stock = new Stock(0, 9);
         long requestCnt1 = 1;
         long expect = 1;
@@ -84,7 +84,7 @@ class StockTest {
     @Test
     @DisplayName("예시 검증 : 콜라2+1")
     void test6() {
-        Promotion promotion = new Promotion(null, 2, 1, null, null);
+        Promotion promotion = new Promotion(null, 2,  null, null);
         Stock stock = new Stock(10, 7);
         long requestCnt1 = 10;
         long expect = -4;
@@ -97,7 +97,7 @@ class StockTest {
     @Test
     @DisplayName("예시 검증 오렌지 주스")
     void test7() {
-        Promotion promotion = new Promotion(null, 1, 1, null, null);
+        Promotion promotion = new Promotion(null, 1, null, null);
         Stock stock = new Stock(0, 5);
 
         long result = stock.calculateOriginalPriceQuantity(2, promotion);
@@ -108,7 +108,7 @@ class StockTest {
     @Test
     @DisplayName("원가 반환 테스트")
     void test8() {
-        Promotion promotion = new Promotion(null, 1, 1, null, null);
+        Promotion promotion = new Promotion(null, 1,  null, null);
         Stock stock = new Stock(10, 1);
 
         for (int expected = 1; expected <= 11; expected++) {
@@ -134,7 +134,7 @@ class StockTest {
     @Test
     @DisplayName("2+1이고 재고가 5개일 때 5개를 요청하면 -2를 반환해야 한다.")
     void test10() {
-        Promotion promotion = new Promotion(null, 2, 1, null, null);
+        Promotion promotion = new Promotion(null, 2,  null, null);
         Stock stock = new Stock(0, 5);
 
         long result = stock.problemQuantity(5, promotion);
@@ -146,7 +146,7 @@ class StockTest {
     @DisplayName("재고에 여유 프로모션 재고가 부족하다면 요청 수량 반환")
     void test11() {
         long maxNormalQuantity = 1000000L;
-        Promotion promotion = new Promotion(null, 1, 1, null, null);
+        Promotion promotion = new Promotion(null, 1,  null, null);
         Stock stock = new Stock(maxNormalQuantity, 1);
 
         for (long requestQuantity = 1; requestQuantity < maxNormalQuantity; requestQuantity++) {
