@@ -35,9 +35,9 @@ public class PurchaseServiceImpl implements PurchaseService {
 
     @Override
     public void create(String input) {
-        OrderInfos purchaseInfos = OrderInfos.create(input);
-        validateQuantity(purchaseInfos);
-        orderInfosRepository.save(purchaseInfos);
+        OrderInfos orderInfos = OrderInfos.create(input);
+        validateQuantity(orderInfos);
+        orderInfosRepository.save(orderInfos);
     }
 
     @Override

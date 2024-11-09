@@ -10,7 +10,7 @@ import store.domain.Products;
 import store.domain.vo.ProductName;
 import store.repository.impl.ProductRepositoryImpl;
 
-class ProductPromotionRepositoryTest {
+class ProductRepositoryTest {
 
     ProductRepository productRepository = new ProductRepositoryImpl();
 

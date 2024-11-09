@@ -97,23 +97,15 @@ public class FileHandler {
 
     protected ProductDto toProductDto(String[] splitLine) {
         try {
-            String name = checkProductName(splitLine[0]);
+            String name = splitLine[0];
+            StringUtils.validName(name);
             long price = Long.parseLong(splitLine[1]);
             long quantity = Long.parseLong(splitLine[2]);
             String promotionName = parsePromotionName(splitLine[3]);
-
             return new ProductDto(ProductName.create(name), price, quantity, promotionName);
         } catch (NumberFormatException e) {
             throw new InvalidFileFormatException(INVALID_FILE_FORMAT.getMessage());
         }
-    }
-
-    private String checkProductName(String name) {
-        if (name.isBlank()) {
-            throw new InvalidFileFormatException(INVALID_FILE_FORMAT.getMessage());
-        }
-
-        return name;
     }
 
     private String parsePromotionName(String promotionName) {

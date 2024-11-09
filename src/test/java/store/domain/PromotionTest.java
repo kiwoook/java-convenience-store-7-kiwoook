@@ -53,7 +53,7 @@ class PromotionTest {
     }
 
     @ParameterizedTest
-    @DisplayName("N+M일때 N만 사면 1을 반환한다.")
+    @DisplayName("N+1일때 N만 사면 1을 반환한다.")
     @CsvSource(value = {"5", "1000000", "500", "1"})
     void test6(String v1) {
         long n = Long.parseLong(v1);
@@ -70,6 +70,7 @@ class PromotionTest {
         LocalDate now = LocalDate.now();
 
         assertThrows(InvalidFileFormatException.class, () ->
-                new Promotion("프로모션", 0, null, now));
+                Promotion.create("프로모션", 0, null, now)
+        );
     }
 }

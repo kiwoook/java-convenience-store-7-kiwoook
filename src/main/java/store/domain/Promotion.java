@@ -16,7 +16,7 @@ public class Promotion {
     private final PromotionDate promotionDate;
     private final long buyPromotionQuantity;
 
-    public Promotion(String name, long buyQuantity, LocalDate startDate, LocalDate endDate) {
+    protected Promotion(String name, long buyQuantity, LocalDate startDate, LocalDate endDate) {
         this.name = name;
         this.promotionDate = new PromotionDate(startDate, endDate);
         this.buyPromotionQuantity = buyQuantity;
