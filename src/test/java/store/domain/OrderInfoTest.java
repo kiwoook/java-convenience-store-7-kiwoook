@@ -29,7 +29,8 @@ class OrderInfoTest {
     @ValueSource(strings = {"[콜라-10-3]", "[-]", "[-3]",
             "[콜라-]", "[콜라-콜라]", "콜라-콜라",
             "콜라-3", "[ - ], [콜라--3]", "[-콜라-3-]",
-            "[콜라-3-]", "[-콜라-3]", "[콜라-0]", "[콜라-10,사이다-3]"
+            "[콜라-3-]", "[-콜라-3]", "[콜라-0]", "[콜라-10,사이다-3]", "[", "-", "]", "[-", "[]", "-]",
+            " [-]", "[ - - - -]", "[-]]]]]]"
     })
     void test2(String input) {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {

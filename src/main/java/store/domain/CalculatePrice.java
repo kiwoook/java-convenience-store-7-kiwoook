@@ -4,6 +4,7 @@ import static store.utils.Constants.BLANK;
 import static store.utils.Constants.ENTER;
 import static store.utils.Constants.TAB;
 
+import java.util.Objects;
 import java.util.StringJoiner;
 import store.enums.Confirmation;
 import store.utils.StringUtils;
@@ -96,5 +97,24 @@ public class CalculatePrice {
                 .add(BLANK).add(BLANK)
                 .add("-" + StringUtils.numberFormat(calculateMembershipDiscount(confirmation)))
                 .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        CalculatePrice that = (CalculatePrice) o;
+        return totalCount == that.totalCount && totalPrice == that.totalPrice
+                && totalPromotionDiscount == that.totalPromotionDiscount
+                && totalOriginalPrice == that.totalOriginalPrice;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(totalCount, totalPrice, totalPromotionDiscount, totalOriginalPrice);
     }
 }

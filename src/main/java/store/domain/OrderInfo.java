@@ -56,13 +56,21 @@ public class OrderInfo {
     }
 
     public OrderConfirmDto toConfirmDto(Product product) {
-        long requireQuantity = product.calculateRequiredQuantity(this.requestQuantity);
+        long requireQuantity = product.calculateRequiredQuantity(requestQuantity);
 
-        return OrderConfirmDto.create(this.productName, this.requestQuantity, requireQuantity);
+        return OrderConfirmDto.create(productName, requestQuantity, requireQuantity);
     }
 
     public void validQuantity(Product product) {
-        product.validStock(this.requestQuantity);
+        product.validStock(requestQuantity);
+    }
+
+    public String toOriginalInput() {
+        return OPEN_BRACKET + productName + SEPARATOR + requestQuantity + CLOSE_BRACKET;
+    }
+
+    public ProductName getProductName() {
+        return productName;
     }
 
     private String[] parseNameAndQuantity(String input) {
@@ -85,6 +93,7 @@ public class OrderInfo {
 
     private String trimBrackets(String input) {
         int endIdx = input.length() - BRACKET_OFFSET;
+
         return input.substring(BRACKET_OFFSET, endIdx);
     }
 
@@ -126,13 +135,7 @@ public class OrderInfo {
         }
     }
 
-    public String toOriginalInput() {
-        return OPEN_BRACKET + productName + SEPARATOR + requestQuantity + CLOSE_BRACKET;
-    }
 
-    public ProductName getProductName() {
-        return productName;
-    }
 
     @Override
     public boolean equals(Object o) {

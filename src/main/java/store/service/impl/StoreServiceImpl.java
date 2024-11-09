@@ -13,7 +13,7 @@ import store.dto.ProductDto;
 import store.dto.ProductDtos;
 import store.dto.PromotionDto;
 import store.dto.PromotionDtos;
-import store.exception.InvalidFormatException;
+import store.exception.InvalidFileFormatException;
 import store.repository.PromotionRepository;
 import store.repository.ProductRepository;
 import store.service.StoreService;
@@ -97,7 +97,7 @@ public class StoreServiceImpl implements StoreService {
 
     private Promotion getPromotion(String promotionName) {
         return promotionPromotionRepository.findById(promotionName).orElseThrow(() ->
-                new InvalidFormatException(INVALID_FILE_FORMAT.getMessage()));
+                new InvalidFileFormatException(INVALID_FILE_FORMAT.getMessage()));
     }
 
     private Product getProduct(ProductDto productDto, Promotion promotion) {

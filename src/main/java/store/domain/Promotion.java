@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 import store.domain.vo.PromotionBundle;
 import store.domain.vo.PromotionDate;
-import store.exception.InvalidFormatException;
+import store.exception.InvalidFileFormatException;
 
 public class Promotion {
 
@@ -46,7 +46,7 @@ public class Promotion {
 
     private void validPromotionQuantity(Long buyQuantity, Long getQuantity) {
         if (buyQuantity == 0 || getQuantity == 0) {
-            throw new InvalidFormatException(INVALID_FILE_FORMAT.getMessage());
+            throw new InvalidFileFormatException(INVALID_FILE_FORMAT.getMessage());
         }
     }
 

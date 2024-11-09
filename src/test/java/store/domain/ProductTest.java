@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import store.domain.vo.ProductName;
-import store.exception.InvalidFormatException;
+import store.exception.InvalidFileFormatException;
 
 class ProductTest {
 
@@ -15,7 +15,7 @@ class ProductTest {
     void test1() {
         Product product = new Product(ProductName.create("제품"), 1000, null);
 
-        assertThrows(InvalidFormatException.class, () -> {
+        assertThrows(InvalidFileFormatException.class, () -> {
             product.validPrice(2000);
         });
     }
@@ -27,7 +27,7 @@ class ProductTest {
         Promotion promotion2 = new Promotion("2+1", 2, 1, null, null);
         ProductName productName = ProductName.create("제품");
         Product product = new Product(productName, 1000, promotion);
-        assertThrows(InvalidFormatException.class, () -> {
+        assertThrows(InvalidFileFormatException.class, () -> {
             product.updatePromotion(promotion2);
         });
     }

@@ -8,7 +8,7 @@ import static store.utils.Constants.SPACE_BAR;
 import java.util.Objects;
 import java.util.StringJoiner;
 import store.domain.vo.ProductName;
-import store.exception.InvalidFormatException;
+import store.exception.InvalidFileFormatException;
 import store.utils.StringUtils;
 
 public class Product {
@@ -43,7 +43,7 @@ public class Product {
 
     public void updatePromotion(Promotion promotion) {
         if (this.promotion != null && !this.promotion.equals(promotion)) {
-            throw new InvalidFormatException(INVALID_FILE_FORMAT.getMessage());
+            throw new InvalidFileFormatException(INVALID_FILE_FORMAT.getMessage());
         }
 
         this.promotion = promotion;
@@ -51,7 +51,7 @@ public class Product {
 
     public void validPrice(long dtoPrice) {
         if (price != dtoPrice) {
-            throw new InvalidFormatException(INVALID_FILE_FORMAT.getMessage());
+            throw new InvalidFileFormatException(INVALID_FILE_FORMAT.getMessage());
         }
     }
 

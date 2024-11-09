@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import store.exception.InvalidFormatException;
+import store.exception.InvalidFileFormatException;
 
 class PromotionTest {
 
@@ -70,10 +70,10 @@ class PromotionTest {
     void test7() {
         LocalDate now = LocalDate.now();
 
-        assertThrows(InvalidFormatException.class, () ->
+        assertThrows(InvalidFileFormatException.class, () ->
                 new Promotion("프로모션", 0, 10, null, now));
 
-        assertThrows(InvalidFormatException.class, () ->
+        assertThrows(InvalidFileFormatException.class, () ->
                 new Promotion("프로모션", 10, 0, null, now));
     }
 }

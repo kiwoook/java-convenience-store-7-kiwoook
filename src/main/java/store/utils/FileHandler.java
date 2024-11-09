@@ -17,7 +17,7 @@ import store.dto.ProductDto;
 import store.dto.ProductDtos;
 import store.dto.PromotionDto;
 import store.dto.PromotionDtos;
-import store.exception.InvalidFormatException;
+import store.exception.InvalidFileFormatException;
 
 public class FileHandler {
     public static final String SEPARATOR = ",";
@@ -40,7 +40,9 @@ public class FileHandler {
     }
 
     public void skipFirstLine(BufferedReader bufferedReader) throws IOException {
-        bufferedReader.readLine();
+        if (bufferedReader.readLine() == null) {
+            throw new InvalidFileFormatException(INVALID_FILE_FORMAT.getMessage());
+        }
     }
 
     public ProductDtos readProductFile() throws IOException {
@@ -53,14 +55,14 @@ public class FileHandler {
 
     private void validLine(String input) {
         if (input == null || input.isBlank()) {
-            throw new InvalidFormatException(INVALID_FILE_FORMAT.getMessage());
+            throw new InvalidFileFormatException(INVALID_FILE_FORMAT.getMessage());
         }
 
         boolean startsWith = input.startsWith(SEPARATOR);
         boolean endsWith = input.endsWith(SEPARATOR);
 
         if (startsWith || endsWith) {
-            throw new InvalidFormatException(INVALID_FILE_FORMAT.getMessage());
+            throw new InvalidFileFormatException(INVALID_FILE_FORMAT.getMessage());
         }
     }
 
@@ -69,7 +71,7 @@ public class FileHandler {
         String[] splitInput = input.split(SEPARATOR);
 
         if (splitInput.length != length) {
-            throw new InvalidFormatException(INVALID_FILE_FORMAT.getMessage());
+            throw new InvalidFileFormatException(INVALID_FILE_FORMAT.getMessage());
         }
 
         return splitInput;
@@ -85,7 +87,7 @@ public class FileHandler {
             LocalDate endDate = LocalDate.parse(splitLine[4]);
             return new PromotionDto(name, buy, get, startDate, endDate);
         } catch (NumberFormatException | DateTimeParseException e) {
-            throw new InvalidFormatException(INVALID_FILE_FORMAT.getMessage());
+            throw new InvalidFileFormatException(INVALID_FILE_FORMAT.getMessage());
         }
     }
 
@@ -98,14 +100,13 @@ public class FileHandler {
 
             return new ProductDto(ProductName.create(name), price, quantity, promotionName);
         } catch (NumberFormatException e) {
-            throw new InvalidFormatException(INVALID_FILE_FORMAT.getMessage());
+            throw new InvalidFileFormatException(INVALID_FILE_FORMAT.getMessage());
         }
-
     }
 
     private String checkProductName(String name) {
         if (name.isBlank()) {
-            throw new InvalidFormatException(INVALID_FILE_FORMAT.getMessage());
+            throw new InvalidFileFormatException(INVALID_FILE_FORMAT.getMessage());
         }
 
         return name;
