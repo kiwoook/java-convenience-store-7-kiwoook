@@ -20,7 +20,7 @@ class StockTest {
         Stock stock = new Stock(0, 6);
 
         // when
-        Long result = stock.remainQuantity(requestCnt1, promotion);
+        Long result = stock.problemQuantity(requestCnt1, promotion);
 
         assertThat(result).isEqualTo(expect);
     }
@@ -35,7 +35,7 @@ class StockTest {
         Promotion promotion = new Promotion(null, 2, 1, null, null);
         Stock stock = new Stock(1, 5);
 
-        Long result = stock.remainQuantity(requestCnt1, promotion);
+        Long result = stock.problemQuantity(requestCnt1, promotion);
 
         assertThat(result).isEqualTo(expect);
     }
@@ -50,7 +50,7 @@ class StockTest {
         Promotion promotion = new Promotion(null, 1, 100, null, null);
         Stock stock = new Stock(100, 100);
 
-        Long result = stock.remainQuantity(requestCnt1, promotion);
+        Long result = stock.problemQuantity(requestCnt1, promotion);
 
         assertThat(result).isEqualTo(expect);
     }
@@ -63,7 +63,7 @@ class StockTest {
         long requestCnt1 = 2;
         long expect = 1;
 
-        Long result = stock.remainQuantity(requestCnt1, promotion);
+        Long result = stock.problemQuantity(requestCnt1, promotion);
 
         assertThat(result).isEqualTo(expect);
     }
@@ -76,7 +76,7 @@ class StockTest {
         long requestCnt1 = 1;
         long expect = 1;
 
-        Long result = stock.remainQuantity(requestCnt1, promotion);
+        Long result = stock.problemQuantity(requestCnt1, promotion);
 
         assertThat(result).isEqualTo(expect);
     }
@@ -89,7 +89,7 @@ class StockTest {
         long requestCnt1 = 10;
         long expect = -4;
 
-        Long result = stock.remainQuantity(requestCnt1, promotion);
+        Long result = stock.problemQuantity(requestCnt1, promotion);
 
         assertThat(result).isEqualTo(expect);
     }
@@ -137,9 +137,22 @@ class StockTest {
         Promotion promotion = new Promotion(null, 2, 1, null, null);
         Stock stock = new Stock(0, 5);
 
-        long result = stock.remainQuantity(5, promotion);
+        long result = stock.problemQuantity(5, promotion);
 
         assertThat(result).isEqualTo(-2);
+    }
+
+    @Test
+    @DisplayName("재고에 여유 프로모션 재고가 부족하다면 요청 수량 반환")
+    void test11() {
+        long maxNormalQuantity = 1000000L;
+        Promotion promotion = new Promotion(null, 1, 1, null, null);
+        Stock stock = new Stock(maxNormalQuantity, 1);
+
+        for (long requestQuantity = 1; requestQuantity < maxNormalQuantity; requestQuantity++) {
+            long result = stock.problemQuantity(requestQuantity, promotion);
+            assertThat(-result).isEqualTo(requestQuantity);
+        }
     }
 
 

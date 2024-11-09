@@ -4,8 +4,8 @@ import static store.enums.ErrorMessage.INVALID_INPUT;
 
 public record ProductName(String value) {
 
-    public ProductName(String value) {
-        this.value = value;
+    public ProductName {
+        validName(value);
     }
 
     public static ProductName create(String value) {

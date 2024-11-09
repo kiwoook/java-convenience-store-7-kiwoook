@@ -9,7 +9,6 @@ public class OutputViewerImpl implements OutputViewer {
     @Override
     public void printError(Exception exception) {
         System.out.println(ERROR_SIGN + exception.getMessage());
-
     }
 
     @Override

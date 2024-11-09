@@ -71,7 +71,6 @@ public class StoreServiceImpl implements StoreService {
 
         LocalDate currentDate = getCurrentDate();
         return createPromotionProduct(productDto, currentDate);
-
     }
 
     private Product createNormalProduct(ProductDto productDto) {

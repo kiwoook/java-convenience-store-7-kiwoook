@@ -24,8 +24,8 @@ public class Stock {
             return 0L;
         }
 
-        long promotionBundle = getPromotionBundleCnt(requestQuantity, promotion);
-        return promotion.totalGetQuantity(promotionBundle);
+        long promotionBundleCnt = getPromotionBundleCnt(requestQuantity, promotion);
+        return promotion.totalGetQuantity(promotionBundleCnt);
     }
 
     public void applyQuantity(long requestQuantity) {
@@ -66,14 +66,22 @@ public class Stock {
         return normalQuantity + COUNT_UNIT;
     }
 
-    public long remainQuantity(long requestQuantity, Promotion promotion) {
+    /**
+     * 프로모션에 따라 문제 있는 수량을 검증하는 메서드
+     *
+     * @param requestQuantity 요청 수량
+     * @param promotion 프로모션 여부
+     * @return 0보다 작으면 원가, 0보다 크면 증정하는 수량을 반환한다.
+     */
+
+    public long problemQuantity(long requestQuantity, Promotion promotion) {
         validRequestQuantity(requestQuantity);
         if (promotion == null || promotionQuantity == 0) {
             return 0L;
         }
 
         long giftQuantity = promotion.getPromotionGiftQuantity(requestQuantity);
-        if (promotionQuantity < Math.max(requestQuantity + giftQuantity, promotion.bundleQuantity())) {
+        if (promotionQuantity < Math.max(requestQuantity + giftQuantity, promotion.bundleSize())) {
             return calculateOriginalPriceQuantity(requestQuantity, promotion);
         }
 
@@ -92,13 +100,12 @@ public class Stock {
 
     public long calculateOriginalPriceQuantity(long requestQuantity, Promotion promotion) {
         validRequestQuantity(requestQuantity);
-
         if (promotion == null) {
             return -requestQuantity;
         }
-        long promotionBundleCnt = getPromotionBundleCnt(requestQuantity, promotion);
 
-        long totalPromotionQuantity = promotion.bundleQuantity() * promotionBundleCnt;
+        long promotionBundleCnt = getPromotionBundleCnt(requestQuantity, promotion);
+        long totalPromotionQuantity = promotion.bundleSize() * promotionBundleCnt;
 
         return totalPromotionQuantity - requestQuantity;
     }
@@ -112,7 +119,7 @@ public class Stock {
     private long getPromotionBundleCnt(long requestQuantity, Promotion promotion) {
         long availablePromoUnits = Math.min(requestQuantity, promotionQuantity);
 
-        return availablePromoUnits / promotion.bundleQuantity();
+        return availablePromoUnits / promotion.bundleSize();
     }
 
     private void validRequestQuantity(long requestQuantity) {

@@ -16,12 +16,6 @@ class FileHandlerTest {
     private final FileHandler fileHandler = new FileHandler();
 
     @Test
-    @Disabled
-    @DisplayName("동작 확인 테스트")
-    void test1() throws IOException {
-    }
-
-    @Test
     @DisplayName("프로모션 DTO 변환 테스트")
     void test2() {
         // given

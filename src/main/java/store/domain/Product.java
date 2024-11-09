@@ -55,7 +55,6 @@ public class Product {
         }
     }
 
-
     public void addNormalQuantity(long quantity) {
         stock.addNormalProduct(quantity);
     }
@@ -65,7 +64,7 @@ public class Product {
     }
 
     public long calculateRequiredQuantity(long requestQuantity) {
-        return stock.remainQuantity(requestQuantity, promotion);
+        return stock.problemQuantity(requestQuantity, promotion);
     }
 
     public long sumOriginalPrice(long requestQuantity) {

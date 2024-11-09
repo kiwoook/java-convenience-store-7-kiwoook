@@ -29,7 +29,7 @@ public class Promotion {
         return promotionDate.isValidPromotion(currentDate);
     }
 
-    protected long bundleQuantity() {
+    protected long bundleSize() {
         return promotionBundle.getQuantity() + promotionBundle.buyQuantity();
     }
 
@@ -38,7 +38,7 @@ public class Promotion {
     }
 
     protected long getPromotionGiftQuantity(long requestQuantity) {
-        if ((requestQuantity + promotionBundle.getQuantity()) % bundleQuantity() == 0) {
+        if ((requestQuantity + promotionBundle.getQuantity()) % bundleSize() == 0) {
             return promotionBundle.getQuantity();
         }
         return 0L;
