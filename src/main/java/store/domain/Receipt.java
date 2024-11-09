@@ -49,7 +49,8 @@ public class Receipt {
 
         processOrderStatus(joiner);
         processDiscountStatus(joiner);
-        joiner.add(calculatePrice.toMessage(confirmation));
+        String calculatePriceMessage = calculatePrice.toMessage(confirmation);
+        joiner.add(calculatePriceMessage);
 
         return new Message(joiner.toString());
     }

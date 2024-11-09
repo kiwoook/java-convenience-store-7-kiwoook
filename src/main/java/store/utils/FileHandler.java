@@ -9,7 +9,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import store.domain.vo.ProductName;
@@ -27,22 +26,18 @@ public class FileHandler {
 
     public <T> List<T> readFile(String filePath, int fieldCount, Function<String[], T> function) throws IOException {
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath))) {
-            List<T> dtoList = new ArrayList<>();
-            skipFirstLine(bufferedReader);
-            String readLine;
-
-            while ((readLine = bufferedReader.readLine()) != null) {
-                String[] splitLine = splitLine(readLine, fieldCount);
-                dtoList.add(function.apply(splitLine));
-            }
-            return dtoList;
+            return bufferedReader.lines()
+                    .skip(1)
+                    .map(line ->
+                            toDto(line, fieldCount, function)
+                    )
+                    .toList();
         }
     }
 
-    public void skipFirstLine(BufferedReader bufferedReader) throws IOException {
-        if (bufferedReader.readLine() == null) {
-            throw new InvalidFileFormatException(INVALID_FILE_FORMAT.getMessage());
-        }
+    protected <T> T toDto(String line, int fieldCount, Function<String[], T> function) {
+        String[] splitLine = splitLine(line, fieldCount);
+        return function.apply(splitLine);
     }
 
     public ProductDtos readProductFile() throws IOException {
@@ -66,17 +61,20 @@ public class FileHandler {
         }
     }
 
-    protected String[] splitLine(String input, int length) {
+    protected String[] splitLine(String input, int fieldCount) {
         validLine(input);
         String[] splitInput = input.split(SEPARATOR);
 
-        if (splitInput.length != length) {
-            throw new InvalidFileFormatException(INVALID_FILE_FORMAT.getMessage());
-        }
+        validSplitInput(splitInput.length, fieldCount);
 
         return splitInput;
     }
 
+    private void validSplitInput(int splitInputLength, int fieldCount) {
+        if (splitInputLength != fieldCount) {
+            throw new InvalidFileFormatException(INVALID_FILE_FORMAT.getMessage());
+        }
+    }
 
     protected PromotionDto toPromotionDto(String[] splitLine) {
         try {

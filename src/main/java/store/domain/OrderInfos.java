@@ -18,13 +18,41 @@ public class OrderInfos {
         this.items = new ArrayList<>();
     }
 
-    private OrderInfos(String input) {
-        validInput(input);
-        this.items = mergePurchaseInfos(input);
+    public OrderInfos(List<OrderInfo> items) {
+        this.items = items;
     }
 
     public static OrderInfos create(String input) {
-        return new OrderInfos(input);
+        validInput(input);
+        return new OrderInfos(mergeOrderInfos(input));
+    }
+
+    private static void validInput(String input) {
+        if (input == null || input.isBlank()) {
+            throw new IllegalArgumentException(INVALID_PURCHASE.getMessage());
+        }
+
+        boolean startsWith = input.startsWith(SEPARATOR);
+        boolean endsWith = input.endsWith(SEPARATOR);
+
+        if (startsWith || endsWith) {
+            throw new IllegalArgumentException(INVALID_PURCHASE.getMessage());
+        }
+    }
+
+    private static List<OrderInfo> mergeOrderInfos(String input) {
+        List<OrderInfo> orderInfos = parsePurchaseInfos(input);
+        return OrderInfo.sumQuantityByProduct(orderInfos)
+                .entrySet()
+                .stream()
+                .map(entry -> OrderInfo.of(entry.getKey(), entry.getValue()))
+                .toList();
+    }
+
+    private static List<OrderInfo> parsePurchaseInfos(String input) {
+        return Arrays.stream(input.split(SEPARATOR))
+                .map(OrderInfo::create)
+                .toList();
     }
 
     public void forEach(Consumer<OrderInfo> purchaseInfo) {
@@ -42,36 +70,6 @@ public class OrderInfos {
     protected int size() {
         return items.size();
     }
-
-    private void validInput(String input) {
-        if (input == null || input.isBlank()) {
-            throw new IllegalArgumentException(INVALID_PURCHASE.getMessage());
-        }
-
-        boolean startsWith = input.startsWith(SEPARATOR);
-        boolean endsWith = input.endsWith(SEPARATOR);
-
-        if (startsWith || endsWith) {
-            throw new IllegalArgumentException(INVALID_PURCHASE.getMessage());
-        }
-    }
-
-    private List<OrderInfo> mergePurchaseInfos(String input) {
-        List<OrderInfo> orderInfos = parsePurchaseInfos(input);
-        return OrderInfo.sumQuantityByProduct(orderInfos)
-                .entrySet()
-                .stream()
-                .map(entry -> OrderInfo.of(entry.getKey(), entry.getValue()))
-                .toList();
-    }
-
-
-    private List<OrderInfo> parsePurchaseInfos(String input) {
-        return Arrays.stream(input.split(SEPARATOR))
-                .map(OrderInfo::create)
-                .toList();
-    }
-
 
     @Override
     public boolean equals(Object o) {

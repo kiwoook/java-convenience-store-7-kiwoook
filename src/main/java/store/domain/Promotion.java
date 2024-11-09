@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 import store.domain.vo.PromotionDate;
 import store.exception.InvalidFileFormatException;
+import store.utils.StringUtils;
 
 public class Promotion {
 
@@ -16,14 +17,21 @@ public class Promotion {
     private final long buyPromotionQuantity;
 
     public Promotion(String name, long buyQuantity, LocalDate startDate, LocalDate endDate) {
-        validPromotionQuantity(buyQuantity);
         this.name = name;
         this.promotionDate = new PromotionDate(startDate, endDate);
         this.buyPromotionQuantity = buyQuantity;
     }
 
-    public static Promotion create(String name, long buy, LocalDate startDate, LocalDate endDate) {
-        return new Promotion(name, buy, startDate, endDate);
+    public static Promotion create(String name, long buyQuantity, LocalDate startDate, LocalDate endDate) {
+        StringUtils.validName(name);
+        validPromotionQuantity(buyQuantity);
+        return new Promotion(name, buyQuantity, startDate, endDate);
+    }
+
+    private static void validPromotionQuantity(Long buyQuantity) {
+        if (buyQuantity <= 0) {
+            throw new InvalidFileFormatException(INVALID_FILE_FORMAT.getMessage());
+        }
     }
 
     public boolean isValidPromotion(LocalDate currentDate) {
@@ -43,12 +51,6 @@ public class Promotion {
             return GET_PROMOTION_QUANTITY;
         }
         return 0L;
-    }
-
-    private void validPromotionQuantity(Long buyQuantity) {
-        if (buyQuantity <= 0) {
-            throw new InvalidFileFormatException(INVALID_FILE_FORMAT.getMessage());
-        }
     }
 
     @Override

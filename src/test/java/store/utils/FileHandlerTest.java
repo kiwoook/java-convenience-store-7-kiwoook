@@ -1,15 +1,18 @@
 package store.utils;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import store.domain.vo.ProductName;
 import store.dto.ProductDto;
 import store.dto.PromotionDto;
+import store.exception.InvalidFileFormatException;
 
 class FileHandlerTest {
 
@@ -56,10 +59,26 @@ class FileHandlerTest {
     }
 
     @Test
-    @DisplayName("splitLine 테스트")
+    @DisplayName("제품 입력 검증")
     void test5() {
+        // given
+        String line = "제품,1000,10,탄산2+1";
+        ProductDto expect = new ProductDto(new ProductName("제품"), 1000, 10, "탄산2+1");
 
-        // TODO 테스트
+        // when
+        ProductDto result = fileHandler.toDto(line, 4, fileHandler::toProductDto);
+
+        // then
+        assertThat(result).isEqualTo(expect);
+    }
+
+    @ParameterizedTest
+    @DisplayName("제품 포맷을 지키지 않으면 에러를 발생한다.")
+    @ValueSource(strings = {",,,,", "제품,1000,10,", ",제품,1000,10,2+1", ",1000,10,2+1", "제품,1000,10,2+1,"})
+    void test6(String line) {
+        assertThrows(InvalidFileFormatException.class, () -> {
+            fileHandler.toDto(line, 4, fileHandler::toProductDto);
+        });
     }
 
 }

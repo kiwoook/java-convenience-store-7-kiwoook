@@ -22,14 +22,14 @@ import store.utils.FileHandler;
 public class StoreServiceImpl implements StoreService {
 
     private final ProductRepository productRepository;
-    private final PromotionRepository promotionPromotionRepository;
+    private final PromotionRepository promotionRepository;
     private final FileHandler fileHandler;
 
-    public StoreServiceImpl(ProductRepository productRepository, PromotionRepository promotionPromotionRepository,
+    public StoreServiceImpl(ProductRepository productRepository, PromotionRepository promotionRepository,
                             FileHandler fileHandler) {
 
         this.productRepository = productRepository;
-        this.promotionPromotionRepository = promotionPromotionRepository;
+        this.promotionRepository = promotionRepository;
         this.fileHandler = fileHandler;
     }
 
@@ -39,7 +39,7 @@ public class StoreServiceImpl implements StoreService {
 
         for (PromotionDto promotionDto : promotionDtos.items()) {
             Promotion promotion = promotionDto.toPromotion();
-            promotionPromotionRepository.save(promotionDto.name(), promotion);
+            promotionRepository.save(promotionDto.name(), promotion);
         }
     }
 
@@ -96,7 +96,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     private Promotion getPromotion(String promotionName) {
-        return promotionPromotionRepository.findById(promotionName).orElseThrow(() ->
+        return promotionRepository.findById(promotionName).orElseThrow(() ->
                 new InvalidFileFormatException(INVALID_FILE_FORMAT.getMessage()));
     }
 

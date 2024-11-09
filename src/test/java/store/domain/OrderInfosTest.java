@@ -45,8 +45,8 @@ class OrderInfosTest {
     @DisplayName("중복된 제품은 병합되어서 반환된다.")
     @ValueSource(strings = {"[콜라-10],[콜라-20],[사이다-10]"})
     void test2(String input) {
-        OrderInfo orderInfo1 = new OrderInfo("[사이다-10]");
-        OrderInfo orderInfo2 = new OrderInfo("[콜라-30]");
+        OrderInfo orderInfo1 = OrderInfo.create("[사이다-10]");
+        OrderInfo orderInfo2 = OrderInfo.create("[콜라-30]");
         OrderInfos expect = new OrderInfos();
         expect.addPurchaseInfo(orderInfo2);
         expect.addPurchaseInfo(orderInfo1);

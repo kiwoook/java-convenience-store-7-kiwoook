@@ -4,6 +4,7 @@ import static store.enums.ErrorMessage.NOT_EXIST_PRODUCT;
 import static store.enums.ErrorMessage.NOT_SAVE_PURCHASE_INFO;
 
 import java.util.List;
+import store.domain.OrderInfo;
 import store.domain.OrderInfos;
 import store.domain.OrderVerification;
 import store.domain.Product;
@@ -44,10 +45,7 @@ public class PurchaseServiceImpl implements PurchaseService {
         OrderInfos orderInfos = getOrderInfos();
 
         List<OrderConfirmDto> orderConfirmDtoList = orderInfos.stream()
-                .map(orderInfo -> {
-                    Product product = getProduct(orderInfo.getProductName());
-                    return orderInfo.toConfirmDto(product);
-                })
+                .map(this::toOrderConfirmDto)
                 .toList();
 
         return OrderConfirmDtos.create(orderConfirmDtoList);
@@ -59,7 +57,6 @@ public class PurchaseServiceImpl implements PurchaseService {
 
         orderVerificationRepository.save(verification);
     }
-
 
     @Override
     public void processProblemQuantity(OrderConfirmDto orderConfirmDto, Confirmation confirmation) {
@@ -88,6 +85,11 @@ public class PurchaseServiceImpl implements PurchaseService {
             Product product = getProduct(orderInfo.getProductName());
             orderInfo.validQuantity(product);
         });
+    }
+
+    private OrderConfirmDto toOrderConfirmDto(OrderInfo orderInfo) {
+        Product product = getProduct(orderInfo.getProductName());
+        return orderInfo.toConfirmDto(product);
     }
 
     private OrderInfos getOrderInfos() {

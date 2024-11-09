@@ -18,7 +18,7 @@ class OrderInfoTest {
     @DisplayName("입력값 검증 테스트")
     @ValueSource(strings = {"[콜라-10]", "[우오어어어어어ㅓ-10000000000000]", "[3-3]"})
     void test1(String input) {
-        OrderInfo result = new OrderInfo(input);
+        OrderInfo result = OrderInfo.create(input);
 
         assertThat(result.toOriginalInput()).isEqualTo(input);
     }
@@ -33,9 +33,8 @@ class OrderInfoTest {
             " [-]", "[ - - - -]", "[-]]]]]]"
     })
     void test2(String input) {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            new OrderInfo(input);
-        });
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> OrderInfo.create(input));
 
         assertThat(exception.getMessage()).isEqualTo(INVALID_PURCHASE.getMessage());
     }
@@ -46,7 +45,7 @@ class OrderInfoTest {
         ProductName productName = ProductName.create("제품");
         Stock stock = new Stock(10, 10);
         Product product = new Product(productName, 1000, stock, null);
-        OrderInfo orderInfo = new OrderInfo("[제품-20]");
+        OrderInfo orderInfo = OrderInfo.create("[제품-20]");
 
         orderInfo.validQuantity(product);
     }
@@ -57,7 +56,7 @@ class OrderInfoTest {
         ProductName productName = ProductName.create("제품");
         Stock stock = new Stock(10, 10);
         Product product = new Product(productName, 1000, stock, null);
-        OrderInfo orderInfo = new OrderInfo("[제품-21]");
+        OrderInfo orderInfo = OrderInfo.create("[제품-21]");
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             orderInfo.validQuantity(product);

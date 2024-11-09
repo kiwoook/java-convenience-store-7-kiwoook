@@ -1,6 +1,6 @@
 package store.repository.impl;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import store.domain.Product;
@@ -10,7 +10,7 @@ import store.repository.ProductRepository;
 
 public class ProductRepositoryImpl implements ProductRepository {
 
-    private final Map<ProductName, Product> database = new HashMap<>();
+    private final Map<ProductName, Product> database = new LinkedHashMap<>();
 
     @Override
     public Optional<Product> findByProductName(ProductName productName) {

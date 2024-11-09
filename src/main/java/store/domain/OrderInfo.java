@@ -25,13 +25,6 @@ public class OrderInfo {
     private final ProductName productName;
     private final long requestQuantity;
 
-    public OrderInfo(String input) {
-        validInput(input);
-        String[] parsedInput = parseNameAndQuantity(input);
-        this.productName = ProductName.create(parsedInput[NAME_IDX]);
-        this.requestQuantity = parseQuantity(parsedInput[QUANTITY_IDX]);
-    }
-
     public OrderInfo(ProductName productName, long requestQuantity) {
         this.productName = productName;
         this.requestQuantity = requestQuantity;
@@ -42,7 +35,9 @@ public class OrderInfo {
     }
 
     public static OrderInfo create(String input) {
-        return new OrderInfo(input);
+        validInput(input);
+        String[] parsedInput = parseNameAndQuantity(input);
+        return new OrderInfo(ProductName.create(parsedInput[NAME_IDX]), parseQuantity(parsedInput[QUANTITY_IDX]));
     }
 
     protected static Map<ProductName, Long> sumQuantityByProduct(List<OrderInfo> orderInfos) {
@@ -53,6 +48,68 @@ public class OrderInfo {
                         Long::sum));
 
         return purchaseCountMap;
+    }
+
+    private static void validInput(String input) {
+        if (input == null || input.isBlank() || input.length() < MIN_LENGTH) {
+            throw new IllegalArgumentException(INVALID_PURCHASE.getMessage());
+        }
+
+        boolean startsWith = input.startsWith(OPEN_BRACKET);
+        boolean endsWith = input.endsWith(CLOSE_BRACKET);
+        if ((!startsWith || !endsWith) && input.contains(SEPARATOR)) {
+            throw new IllegalArgumentException(INVALID_PURCHASE.getMessage());
+        }
+    }
+
+    private static String[] parseNameAndQuantity(String input) {
+        String trimInput = trimBrackets(input);
+        validTrimInput(trimInput);
+        String[] splitInput = trimInput.split(SEPARATOR);
+        validSplitInput(splitInput);
+
+        return splitInput;
+    }
+
+    private static void validTrimInput(String trimInput) {
+        boolean startsWith = trimInput.startsWith(SEPARATOR);
+        boolean endsWith = trimInput.endsWith(SEPARATOR);
+
+        if (startsWith || endsWith) {
+            throw new IllegalArgumentException(INVALID_PURCHASE.getMessage());
+        }
+    }
+
+    private static String trimBrackets(String input) {
+        int endIdx = input.length() - BRACKET_OFFSET;
+
+        return input.substring(BRACKET_OFFSET, endIdx);
+    }
+
+    private static long parseQuantity(String number) {
+        try {
+            long parseNumber = Long.parseLong(number);
+            validQuantity(parseNumber);
+            return parseNumber;
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(INVALID_PURCHASE.getMessage());
+        }
+    }
+
+    private static void validQuantity(long number) {
+        if (number <= ZERO) {
+            throw new IllegalArgumentException(INVALID_PURCHASE.getMessage());
+        }
+    }
+
+    private static void validSplitInput(String[] splitInput) {
+        if (splitInput.length != SPLIT_LENGTH) {
+            throw new IllegalArgumentException(INVALID_PURCHASE.getMessage());
+        }
+
+        if (splitInput[NAME_IDX].isBlank() || splitInput[QUANTITY_IDX].isBlank()) {
+            throw new IllegalArgumentException(INVALID_PURCHASE.getMessage());
+        }
     }
 
     public OrderConfirmDto toConfirmDto(Product product) {
@@ -72,70 +129,6 @@ public class OrderInfo {
     public ProductName getProductName() {
         return productName;
     }
-
-    private String[] parseNameAndQuantity(String input) {
-        String trimInput = trimBrackets(input);
-        validTrimInput(trimInput);
-        String[] splitInput = trimInput.split(SEPARATOR);
-        validSplitInput(splitInput);
-
-        return splitInput;
-    }
-
-    private void validTrimInput(String trimInput) {
-        boolean startsWith = trimInput.startsWith(SEPARATOR);
-        boolean endsWith = trimInput.endsWith(SEPARATOR);
-
-        if (startsWith || endsWith) {
-            throw new IllegalArgumentException(INVALID_PURCHASE.getMessage());
-        }
-    }
-
-    private String trimBrackets(String input) {
-        int endIdx = input.length() - BRACKET_OFFSET;
-
-        return input.substring(BRACKET_OFFSET, endIdx);
-    }
-
-    private long parseQuantity(String number) {
-        try {
-            long parseNumber = Long.parseLong(number);
-            validQuantity(parseNumber);
-            return parseNumber;
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(INVALID_PURCHASE.getMessage());
-        }
-    }
-
-    private void validQuantity(long number) {
-        if (number <= ZERO) {
-            throw new IllegalArgumentException(INVALID_PURCHASE.getMessage());
-        }
-    }
-
-    private void validSplitInput(String[] splitInput) {
-        if (splitInput.length != SPLIT_LENGTH) {
-            throw new IllegalArgumentException(INVALID_PURCHASE.getMessage());
-        }
-
-        if (splitInput[NAME_IDX].isBlank() || splitInput[QUANTITY_IDX].isBlank()) {
-            throw new IllegalArgumentException(INVALID_PURCHASE.getMessage());
-        }
-    }
-
-    private void validInput(String input) {
-        if (input == null || input.isBlank() || input.length() < MIN_LENGTH) {
-            throw new IllegalArgumentException(INVALID_PURCHASE.getMessage());
-        }
-
-        boolean startsWith = input.startsWith(OPEN_BRACKET);
-        boolean endsWith = input.endsWith(CLOSE_BRACKET);
-        if ((!startsWith || !endsWith) && input.contains(SEPARATOR)) {
-            throw new IllegalArgumentException(INVALID_PURCHASE.getMessage());
-        }
-    }
-
-
 
     @Override
     public boolean equals(Object o) {
