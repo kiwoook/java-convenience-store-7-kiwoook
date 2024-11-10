@@ -1,13 +1,13 @@
 package store.repository;
 
-import store.domain.OrderVerificationV2;
-import store.domain.OrderVerifications;
+import store.domain.VerifiedOrder;
+import store.domain.VerifiedOrders;
 
 public interface OrderVerificationRepository {
 
-    void save(OrderVerificationV2 object);
+    void save(VerifiedOrder object);
 
-    OrderVerifications getAll();
+    VerifiedOrders getAll();
 
     void clear();
 }

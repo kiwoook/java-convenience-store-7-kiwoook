@@ -1,6 +1,7 @@
 package store.domain;
 
 import static store.enums.ErrorMessage.INVALID_FILE_FORMAT;
+import static store.enums.ErrorMessage.INVALID_INPUT;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -10,6 +11,7 @@ import store.utils.StringUtils;
 
 public class Promotion {
 
+    private static final String NULL_NAME = "null";
     private static final long GET_PROMOTION_QUANTITY = 1;
 
     private final String name;
@@ -24,6 +26,7 @@ public class Promotion {
 
     public static Promotion create(String name, long buyQuantity, LocalDate startDate, LocalDate endDate) {
         StringUtils.validName(name);
+        validPromotionName(name);
         validPromotionQuantity(buyQuantity);
         return new Promotion(name, buyQuantity, startDate, endDate);
     }
@@ -31,6 +34,12 @@ public class Promotion {
     private static void validPromotionQuantity(Long buyQuantity) {
         if (buyQuantity <= 0) {
             throw new InvalidFileFormatException(INVALID_FILE_FORMAT.getMessage());
+        }
+    }
+
+    private static void validPromotionName(String name) {
+        if (name.equalsIgnoreCase(NULL_NAME)) {
+            throw new InvalidFileFormatException(INVALID_INPUT.getMessage());
         }
     }
 

@@ -142,19 +142,4 @@ public class Product {
         return Objects.hash(name, price, stock, promotion);
     }
 
-    private ProductName getName() {
-        return name;
-    }
-
-    private long getPrice() {
-        return price;
-    }
-
-    private Stock getStock() {
-        return stock;
-    }
-
-    private Promotion getPromotion() {
-        return promotion;
-    }
 }

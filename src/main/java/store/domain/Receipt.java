@@ -21,32 +21,25 @@ public class Receipt {
     private static final double DISCOUNT_RATE = 0.3;
     private static final long ROUNDING_SCALE = 10;
 
-    private final OrderVerifications orderVerifications;
+    private final VerifiedOrders verifiedOrders;
 
-    public Receipt(OrderVerifications orderVerifications) {
-        this.orderVerifications = orderVerifications;
+    public Receipt(VerifiedOrders verifiedOrders) {
+        this.verifiedOrders = verifiedOrders;
     }
 
-    public static Receipt from(OrderVerifications orderVerifications) {
-        return new Receipt(orderVerifications);
+    public static Receipt from(VerifiedOrders verifiedOrders) {
+        return new Receipt(verifiedOrders);
     }
 
-    public Message toMessageV2(Confirmation confirmation) {
+    public Message toMessage(Confirmation confirmation) {
         StringJoiner joiner = receiptTitle();
-        String message = joiner.add(orderVerifications.getOrderStatus())
+        String message = joiner.add(verifiedOrders.getOrderStatus())
                 .add(GIFT_TITLE)
-                .add(orderVerifications.getDiscountStatus())
+                .add(verifiedOrders.getDiscountStatus())
                 .add(toCalculateMessage(confirmation))
                 .toString();
 
         return new Message(message);
-    }
-
-    private StringJoiner receiptTitle() {
-        return new StringJoiner(ENTER)
-                .add(BLANK)
-                .add(STORE_TITLE)
-                .add(ATTRIBUTE);
     }
 
     public String toCalculateMessage(Confirmation confirmation) {
@@ -59,19 +52,25 @@ public class Receipt {
                 .toString();
     }
 
+    private StringJoiner receiptTitle() {
+        return new StringJoiner(ENTER)
+                .add(BLANK)
+                .add(STORE_TITLE)
+                .add(ATTRIBUTE);
+    }
 
     protected long calculateMembershipDiscount(Confirmation confirmation) {
         if (confirmation.equals(Confirmation.NO)) {
             return 0L;
         }
-        long totalOriginalPrice = orderVerifications.getTotalOriginalPrice();
+        long totalOriginalPrice = verifiedOrders.getTotalOriginalPrice();
         long membershipDiscount = Math.round(totalOriginalPrice * DISCOUNT_RATE * ROUNDING_SCALE) / ROUNDING_SCALE;
         return Math.min(membershipDiscount, MAX_PROMOTION_DISCOUNT);
     }
 
     private String toTotal() {
-        long totalCount = orderVerifications.getTotalCount();
-        long totalPrice = orderVerifications.getTotalPrice();
+        long totalCount = verifiedOrders.getTotalCount();
+        long totalPrice = verifiedOrders.getTotalPrice();
         return new StringJoiner(TAB)
                 .add("총구매액").add(BLANK)
                 .add(StringUtils.numberFormat(totalCount))
@@ -88,7 +87,7 @@ public class Receipt {
     }
 
     private String toPromotionDiscount() {
-        long totalPromotionDiscount = orderVerifications.getTotalDiscount();
+        long totalPromotionDiscount = verifiedOrders.getTotalDiscount();
         return new StringJoiner(TAB)
                 .add("행사할인")
                 .add(BLANK).add(BLANK)
@@ -97,8 +96,8 @@ public class Receipt {
     }
 
     private String toFinalPrice(Confirmation confirmation) {
-        long totalPrice = orderVerifications.getTotalPrice();
-        long totalPromotionDiscount = orderVerifications.getTotalDiscount();
+        long totalPrice = verifiedOrders.getTotalPrice();
+        long totalPromotionDiscount = verifiedOrders.getTotalDiscount();
         return new StringJoiner(TAB)
                 .add("내실돈")
                 .add(BLANK).add(BLANK).add(BLANK)

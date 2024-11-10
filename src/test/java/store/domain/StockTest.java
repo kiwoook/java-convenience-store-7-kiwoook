@@ -1,6 +1,7 @@
 package store.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,7 @@ class StockTest {
         long requestCnt1 = Long.parseLong(value1);
         long expect = Long.parseLong(value2);
 
-        Promotion promotion = new Promotion(null, 2,  null, null);
+        Promotion promotion = new Promotion(null, 2, null, null);
         Stock stock = new Stock(1, 5);
 
         Long result = stock.problemQuantity(requestCnt1, promotion);
@@ -47,7 +48,7 @@ class StockTest {
         long requestCnt1 = Long.parseLong(value1);
         long expect = Long.parseLong(value2);
 
-        Promotion promotion = new Promotion(null, 1,  null, null);
+        Promotion promotion = new Promotion(null, 1, null, null);
         Stock stock = new Stock(100, 1);
 
         Long result = stock.problemQuantity(requestCnt1, promotion);
@@ -58,7 +59,7 @@ class StockTest {
     @Test
     @DisplayName("예시 검증: 2+1")
     void test4() {
-        Promotion promotion = new Promotion(null, 2,  null, null);
+        Promotion promotion = new Promotion(null, 2, null, null);
         Stock stock = new Stock(0, 6);
         long requestCnt1 = 2;
         long expect = 1;
@@ -84,7 +85,7 @@ class StockTest {
     @Test
     @DisplayName("예시 검증 : 콜라2+1")
     void test6() {
-        Promotion promotion = new Promotion(null, 2,  null, null);
+        Promotion promotion = new Promotion(null, 2, null, null);
         Stock stock = new Stock(10, 7);
         long requestCnt1 = 10;
         long expect = -4;
@@ -108,7 +109,7 @@ class StockTest {
     @Test
     @DisplayName("원가 반환 테스트")
     void test8() {
-        Promotion promotion = new Promotion(null, 1,  null, null);
+        Promotion promotion = new Promotion(null, 1, null, null);
         Stock stock = new Stock(10, 1);
 
         for (int expected = 1; expected <= 11; expected++) {
@@ -134,7 +135,7 @@ class StockTest {
     @Test
     @DisplayName("2+1이고 재고가 5개일 때 5개를 요청하면 -2를 반환해야 한다.")
     void test10() {
-        Promotion promotion = new Promotion(null, 2,  null, null);
+        Promotion promotion = new Promotion(null, 2, null, null);
         Stock stock = new Stock(0, 5);
 
         long result = stock.problemQuantity(5, promotion);
@@ -146,7 +147,7 @@ class StockTest {
     @DisplayName("재고에 여유 프로모션 재고가 부족하다면 요청 수량 반환")
     void test11() {
         long maxNormalQuantity = 1000000L;
-        Promotion promotion = new Promotion(null, 1,  null, null);
+        Promotion promotion = new Promotion(null, 1, null, null);
         Stock stock = new Stock(maxNormalQuantity, 1);
 
         for (long requestQuantity = 1; requestQuantity < maxNormalQuantity; requestQuantity++) {
@@ -155,5 +156,24 @@ class StockTest {
         }
     }
 
+    @Test
+    @DisplayName("요청 재고를 적용할 때 프로모션 재고부터 나가야 한다.")
+    void test12() {
+        Stock result = new Stock(2, 10);
+        Stock expected = new Stock(1, 0);
 
+        result.applyQuantity(11);
+
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("재고보다 많은 요청은 에러를 발생한다.")
+    void test13() {
+        long quantity = 10;
+        Stock stock = new Stock(quantity, quantity);
+        assertThrows(IllegalStateException.class, () -> {
+            stock.problemQuantity(quantity * 2 + 1, null);
+        });
+    }
 }

@@ -5,41 +5,41 @@ import static store.utils.Constants.ENTER;
 import java.util.List;
 import java.util.StringJoiner;
 
-public class OrderVerifications {
+public class VerifiedOrders {
 
-    private final List<OrderVerificationV2> items;
+    private final List<VerifiedOrder> items;
 
-    public OrderVerifications(List<OrderVerificationV2> items) {
+    public VerifiedOrders(List<VerifiedOrder> items) {
         this.items = items;
     }
 
     public long getTotalCount() {
-        return OrderVerificationV2.getTotalCount(items);
+        return VerifiedOrder.getTotalCount(items);
     }
 
     public long getTotalPrice() {
         return items.stream()
-                .mapToLong(OrderVerificationV2::getTotalPrice)
+                .mapToLong(VerifiedOrder::getTotalPrice)
                 .sum();
     }
 
     public long getTotalOriginalPrice() {
         return items.stream()
-                .mapToLong(OrderVerificationV2::getTotalOriginalPriceByProduct)
+                .mapToLong(VerifiedOrder::getTotalOriginalPriceByProduct)
                 .sum();
     }
 
     public long getTotalDiscount() {
         return items.stream()
-                .mapToLong(OrderVerificationV2::totalDiscountByProduct)
+                .mapToLong(VerifiedOrder::totalDiscountByProduct)
                 .sum();
     }
 
     public String getOrderStatus() {
         StringJoiner joiner = new StringJoiner(ENTER);
 
-        for (OrderVerificationV2 orderVerification : items) {
-            joiner.add(orderVerification.getStatus());
+        for (VerifiedOrder verifiedOrder : items) {
+            joiner.add(verifiedOrder.getStatus());
         }
 
         return joiner.toString();
@@ -48,8 +48,8 @@ public class OrderVerifications {
     public String getDiscountStatus() {
         StringJoiner joiner = new StringJoiner(ENTER);
 
-        for (OrderVerificationV2 orderVerification : items) {
-            String discountStatus = orderVerification.getDiscountStatus();
+        for (VerifiedOrder verifiedOrder : items) {
+            String discountStatus = verifiedOrder.getDiscountStatus();
             if (discountStatus != null) {
                 joiner.add(discountStatus);
             }
@@ -59,6 +59,6 @@ public class OrderVerifications {
     }
 
     public void apply() {
-        items.forEach(OrderVerificationV2::applyStock);
+        items.forEach(VerifiedOrder::applyStock);
     }
 }

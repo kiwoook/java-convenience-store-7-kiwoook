@@ -10,27 +10,33 @@ import store.dto.OrderConfirmDto;
 import store.enums.Confirmation;
 import store.utils.StringUtils;
 
-public class OrderVerificationV2 {
+public class VerifiedOrder {
 
     private static final long ZERO = 0;
 
     private final Product product;
     private final long requestQuantity;
 
-    protected OrderVerificationV2(Product product, long requestQuantity) {
+    protected VerifiedOrder(Product product, long requestQuantity) {
         this.product = product;
         this.requestQuantity = requestQuantity;
     }
 
-    public static OrderVerificationV2 of(Product product, long requestQuantity) {
-        return new OrderVerificationV2(product, requestQuantity);
+    public static VerifiedOrder of(Product product, long requestQuantity) {
+        return new VerifiedOrder(product, requestQuantity);
     }
 
-    public static OrderVerificationV2 of(Product product, OrderConfirmDto orderConfirmDto, Confirmation confirmation) {
-        return new OrderVerificationV2(product, processQuantity(orderConfirmDto, confirmation));
+    public static VerifiedOrder of(Product product, OrderConfirmDto orderConfirmDto, Confirmation confirmation) {
+        return new VerifiedOrder(product, processQuantity(orderConfirmDto, confirmation));
     }
 
-    public static long processQuantity(OrderConfirmDto confirmDto, Confirmation confirmation) {
+    public static long getTotalCount(List<VerifiedOrder> verifiedOrders) {
+        return verifiedOrders.stream()
+                .mapToLong(VerifiedOrder::getRequestQuantity)
+                .sum();
+    }
+
+    private static long processQuantity(OrderConfirmDto confirmDto, Confirmation confirmation) {
         if (confirmDto.problemQuantity() > 0 && confirmation.equals(Confirmation.YES)) {
             return confirmDto.requestQuantity() + confirmDto.problemQuantity();
         }
@@ -41,10 +47,8 @@ public class OrderVerificationV2 {
         return confirmDto.requestQuantity();
     }
 
-    public static long getTotalCount(List<OrderVerificationV2> orderVerificationV2s) {
-        return orderVerificationV2s.stream()
-                .mapToLong(OrderVerificationV2::getRequestQuantity)
-                .sum();
+    public void applyStock() {
+        product.applyStock(requestQuantity);
     }
 
     public String toQuantityString() {
@@ -76,6 +80,7 @@ public class OrderVerificationV2 {
 
     protected String toFormatTotalPriceByProduct() {
         long totalPrice = product.calculateSumPrice(requestQuantity);
+
         return StringUtils.numberFormat(totalPrice);
     }
 
@@ -93,10 +98,6 @@ public class OrderVerificationV2 {
         return product.calculateSumPrice(giftQuantity);
     }
 
-    public void applyStock() {
-        product.applyStock(requestQuantity);
-    }
-
     private long getRequestQuantity() {
         return requestQuantity;
     }
@@ -109,7 +110,7 @@ public class OrderVerificationV2 {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        OrderVerificationV2 that = (OrderVerificationV2) o;
+        VerifiedOrder that = (VerifiedOrder) o;
         return requestQuantity == that.requestQuantity && Objects.equals(product, that.product);
     }
 

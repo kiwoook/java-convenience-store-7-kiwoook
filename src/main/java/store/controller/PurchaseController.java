@@ -25,18 +25,18 @@ public class PurchaseController {
         this.outputViewer = outputViewer;
     }
 
-    public void purchase(){
+    public void purchase() {
         buy();
         check();
         printReceipt();
     }
 
-    public void buy() {
+    protected void buy() {
         inputViewer.promptMessage(BUY);
         RecoveryUtils.executeWithRetry(inputViewer::getInput, purchaseService::createOrderInfos);
     }
 
-    public void check() {
+    protected void check() {
         OrderConfirmDtos confirmDtos = purchaseService.check();
         for (OrderConfirmDto confirmDto : confirmDtos.items()) {
             if (confirmDto.problemQuantity() == 0) {
@@ -47,7 +47,7 @@ public class PurchaseController {
         }
     }
 
-    public void printReceipt() {
+    protected void printReceipt() {
         inputViewer.promptMessage(MEMBERSHIP_DISCOUNT);
 
         Message receiptDto = RecoveryUtils.executeWithRetry(() -> Confirmation.from(inputViewer.getInput()),

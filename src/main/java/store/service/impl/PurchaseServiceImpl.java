@@ -6,8 +6,8 @@ import static store.enums.ErrorMessage.NOT_SAVE_PURCHASE_INFO;
 import java.util.List;
 import store.domain.OrderInfo;
 import store.domain.OrderInfos;
-import store.domain.OrderVerificationV2;
-import store.domain.OrderVerifications;
+import store.domain.VerifiedOrder;
+import store.domain.VerifiedOrders;
 import store.domain.Product;
 import store.domain.Receipt;
 import store.domain.vo.ProductName;
@@ -55,27 +55,27 @@ public class PurchaseServiceImpl implements PurchaseService {
     @Override
     public void processQuantity(OrderConfirmDto orderConfirmDto) {
         Product product = getProduct(orderConfirmDto.name());
-        OrderVerificationV2 orderVerificationV2 = OrderVerificationV2.of(product, orderConfirmDto.requestQuantity());
+        VerifiedOrder verifiedOrder = VerifiedOrder.of(product, orderConfirmDto.requestQuantity());
 
-        orderVerificationRepository.save(orderVerificationV2);
+        orderVerificationRepository.save(verifiedOrder);
     }
 
     @Override
     public void processProblemQuantity(OrderConfirmDto orderConfirmDto, Confirmation confirmation) {
         Product product = getProduct(orderConfirmDto.name());
-        OrderVerificationV2 orderVerificationV2 = OrderVerificationV2.of(product, orderConfirmDto, confirmation);
+        VerifiedOrder verifiedOrder = VerifiedOrder.of(product, orderConfirmDto, confirmation);
 
-        orderVerificationRepository.save(orderVerificationV2);
+        orderVerificationRepository.save(verifiedOrder);
     }
 
 
     @Override
     public Message getReceipt(Confirmation membershipConfirmation) {
-        OrderVerifications orderVerifications = orderVerificationRepository.getAll();
-        Receipt receipt = Receipt.from(orderVerifications);
-        Message message = receipt.toMessageV2(membershipConfirmation);
+        VerifiedOrders verifiedOrders = orderVerificationRepository.getAll();
+        Receipt receipt = Receipt.from(verifiedOrders);
+        Message message = receipt.toMessage(membershipConfirmation);
 
-        orderVerifications.apply();
+        verifiedOrders.apply();
 
         return message;
     }
