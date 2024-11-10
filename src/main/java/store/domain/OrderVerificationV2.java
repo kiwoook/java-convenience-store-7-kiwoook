@@ -17,7 +17,7 @@ public class OrderVerificationV2 {
     private final Product product;
     private final long requestQuantity;
 
-    public OrderVerificationV2(Product product, long requestQuantity) {
+    protected OrderVerificationV2(Product product, long requestQuantity) {
         this.product = product;
         this.requestQuantity = requestQuantity;
     }
@@ -47,46 +47,18 @@ public class OrderVerificationV2 {
                 .sum();
     }
 
-    public String getStatus() {
-        StringJoiner joiner = new StringJoiner(TAB);
-
-        return joiner.add(product.toProductName())
-                .add(BLANK)
-                .add(toQuantityString())
-                .add(BLANK)
-                .add(formatTotalPriceByProduct())
-                .toString();
-    }
-
-    public String formatTotalPriceByProduct() {
-        long totalPrice = product.calculateSumPrice(requestQuantity);
-        return StringUtils.numberFormat(totalPrice);
-    }
-
     public String toQuantityString() {
         return String.valueOf(requestQuantity);
     }
 
-    public long totalOriginalPriceByProduct() {
-        return product.sumOriginalPrice(requestQuantity);
-    }
-
-    public long totalPrice() {
-        return product.calculateSumPrice(requestQuantity);
-    }
-
-    public long totalDiscountByProduct() {
-        long giftQuantity = product.calculateGiftQuantity(requestQuantity);
-
-        return product.calculateSumPrice(giftQuantity);
-    }
-
-    public void apply() {
-        product.applyStock(requestQuantity);
-    }
-
-    private long getRequestQuantity() {
-        return requestQuantity;
+    public String getStatus() {
+        StringJoiner joiner = new StringJoiner(TAB);
+        return joiner.add(product.toProductName())
+                .add(BLANK)
+                .add(toQuantityString())
+                .add(BLANK)
+                .add(toFormatTotalPriceByProduct())
+                .toString();
     }
 
     public String getDiscountStatus() {
@@ -100,6 +72,33 @@ public class OrderVerificationV2 {
         return joiner.add(product.toProductName() + TAB)
                 .add(String.valueOf(giftQuantity))
                 .toString();
+    }
+
+    protected String toFormatTotalPriceByProduct() {
+        long totalPrice = product.calculateSumPrice(requestQuantity);
+        return StringUtils.numberFormat(totalPrice);
+    }
+
+    protected long getTotalOriginalPriceByProduct() {
+        return product.sumOriginalPrice(requestQuantity);
+    }
+
+    protected long getTotalPrice() {
+        return product.calculateSumPrice(requestQuantity);
+    }
+
+    protected long totalDiscountByProduct() {
+        long giftQuantity = product.calculateGiftQuantity(requestQuantity);
+
+        return product.calculateSumPrice(giftQuantity);
+    }
+
+    public void applyStock() {
+        product.applyStock(requestQuantity);
+    }
+
+    private long getRequestQuantity() {
+        return requestQuantity;
     }
 
     @Override

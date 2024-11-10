@@ -33,7 +33,7 @@ public class PurchaseController {
 
     public void buy() {
         inputViewer.promptMessage(BUY);
-        RecoveryUtils.executeWithRetry(inputViewer::getInput, purchaseService::create);
+        RecoveryUtils.executeWithRetry(inputViewer::getInput, purchaseService::createOrderInfos);
     }
 
     public void check() {

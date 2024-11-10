@@ -19,13 +19,13 @@ public class OrderVerifications {
 
     public long getTotalPrice() {
         return items.stream()
-                .mapToLong(OrderVerificationV2::totalPrice)
+                .mapToLong(OrderVerificationV2::getTotalPrice)
                 .sum();
     }
 
     public long getTotalOriginalPrice() {
         return items.stream()
-                .mapToLong(OrderVerificationV2::totalOriginalPriceByProduct)
+                .mapToLong(OrderVerificationV2::getTotalOriginalPriceByProduct)
                 .sum();
     }
 
@@ -59,8 +59,6 @@ public class OrderVerifications {
     }
 
     public void apply() {
-        items.forEach(OrderVerificationV2::apply);
+        items.forEach(OrderVerificationV2::applyStock);
     }
-
-
 }

@@ -7,7 +7,7 @@ import store.enums.Confirmation;
 
 public interface PurchaseService {
 
-    void create(String input);
+    void createOrderInfos(String input);
 
     OrderConfirmDtos check();
 
