@@ -16,7 +16,7 @@ import store.domain.vo.ProductName;
 import store.repository.ProductRepository;
 import store.repository.impl.ProductRepositoryImpl;
 import store.repository.impl.PurchaseInfosRepository;
-import store.repository.impl.PurchaseVerificationRepository;
+import store.repository.impl.OrderVerificationRepositoryImpl;
 import store.service.impl.PurchaseServiceImpl;
 
 class PurchaseServiceTest {
@@ -29,9 +29,9 @@ class PurchaseServiceTest {
     void setUp() {
         productRepository = new ProductRepositoryImpl();
         PurchaseInfosRepository purchaseInfosSingleRepository = new PurchaseInfosRepository();
-        PurchaseVerificationRepository purchaseVerificationRepository = new PurchaseVerificationRepository();
+        OrderVerificationRepositoryImpl orderVerificationRepositoryImpl = new OrderVerificationRepositoryImpl();
         purchaseService = new PurchaseServiceImpl(purchaseInfosSingleRepository,
-                productRepository, purchaseVerificationRepository);
+                productRepository, orderVerificationRepositoryImpl);
     }
 
     @Test
@@ -45,7 +45,7 @@ class PurchaseServiceTest {
 
         // when
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            purchaseService.create("[제품1-10]");
+            purchaseService.createOrderInfos("[제품1-10]");
         });
 
         assertThat(exception.getMessage()).isEqualTo(NOT_EXIST_PRODUCT.getMessage());
@@ -62,7 +62,7 @@ class PurchaseServiceTest {
 
         // when
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            purchaseService.create("[제품1-1]");
+            purchaseService.createOrderInfos("[제품1-1]");
         });
 
         assertThat(exception.getMessage()).isEqualTo(EXCEED_PURCHASE.getMessage());
@@ -77,7 +77,7 @@ class PurchaseServiceTest {
         productRepository.save(productName, product);
 
         // when
-        purchaseService.create("[제품1-5]");
+        purchaseService.createOrderInfos("[제품1-5]");
     }
 
     @Test
@@ -89,7 +89,7 @@ class PurchaseServiceTest {
         productRepository.save(productName, product);
 
         // when
-        purchaseService.create("[제품1-5]");
+        purchaseService.createOrderInfos("[제품1-5]");
     }
 
     @AfterEach

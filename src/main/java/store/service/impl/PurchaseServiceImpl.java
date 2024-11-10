@@ -6,7 +6,8 @@ import static store.enums.ErrorMessage.NOT_SAVE_PURCHASE_INFO;
 import java.util.List;
 import store.domain.OrderInfo;
 import store.domain.OrderInfos;
-import store.domain.OrderVerification;
+import store.domain.OrderVerificationV2;
+import store.domain.OrderVerifications;
 import store.domain.Product;
 import store.domain.Receipt;
 import store.domain.vo.ProductName;
@@ -15,7 +16,7 @@ import store.dto.OrderConfirmDto;
 import store.dto.OrderConfirmDtos;
 import store.enums.Confirmation;
 import store.exception.EntityNotFoundException;
-import store.repository.ListRepository;
+import store.repository.OrderVerificationRepository;
 import store.repository.ProductRepository;
 import store.repository.SingleRepository;
 import store.service.PurchaseService;
@@ -24,17 +25,17 @@ public class PurchaseServiceImpl implements PurchaseService {
 
     private final SingleRepository<OrderInfos> orderInfosRepository;
     private final ProductRepository productRepository;
-    private final ListRepository<OrderVerification> orderVerificationRepository;
+    private final OrderVerificationRepository orderVerificationRepository;
 
     public PurchaseServiceImpl(SingleRepository<OrderInfos> orderInfosRepository, ProductRepository productRepository,
-                               ListRepository<OrderVerification> orderVerificationRepository) {
+                               OrderVerificationRepository orderVerificationRepository) {
         this.orderInfosRepository = orderInfosRepository;
         this.productRepository = productRepository;
         this.orderVerificationRepository = orderVerificationRepository;
     }
 
     @Override
-    public void create(String input) {
+    public void createOrderInfos(String input) {
         OrderInfos orderInfos = OrderInfos.create(input);
         validateQuantity(orderInfos);
         orderInfosRepository.save(orderInfos);
@@ -53,31 +54,30 @@ public class PurchaseServiceImpl implements PurchaseService {
 
     @Override
     public void processQuantity(OrderConfirmDto orderConfirmDto) {
-        OrderVerification verification = OrderVerification.from(orderConfirmDto);
+        Product product = getProduct(orderConfirmDto.name());
+        OrderVerificationV2 orderVerificationV2 = OrderVerificationV2.of(product, orderConfirmDto.requestQuantity());
 
-        orderVerificationRepository.save(verification);
+        orderVerificationRepository.save(orderVerificationV2);
     }
 
     @Override
     public void processProblemQuantity(OrderConfirmDto orderConfirmDto, Confirmation confirmation) {
-        OrderVerification verification = OrderVerification.of(orderConfirmDto, confirmation);
+        Product product = getProduct(orderConfirmDto.name());
+        OrderVerificationV2 orderVerificationV2 = OrderVerificationV2.of(product, orderConfirmDto, confirmation);
 
-        orderVerificationRepository.save(verification);
+        orderVerificationRepository.save(orderVerificationV2);
     }
 
 
     @Override
     public Message getReceipt(Confirmation membershipConfirmation) {
-        List<OrderVerification> orderVerifications = orderVerificationRepository.getAll();
-        Receipt receipt = Receipt.create();
+        OrderVerifications orderVerifications = orderVerificationRepository.getAll();
+        Receipt receipt = Receipt.from(orderVerifications);
+        Message message = receipt.toMessageV2(membershipConfirmation);
 
-        orderVerifications.forEach(purchaseVerification -> {
-            Product product = getProduct(purchaseVerification.name());
-            receipt.processOrder(purchaseVerification, product);
-            applyPurchase(product, purchaseVerification);
-        });
+        orderVerifications.apply();
 
-        return receipt.toMessage(membershipConfirmation);
+        return message;
     }
 
     protected void validateQuantity(OrderInfos orderInfos) {
@@ -100,10 +100,5 @@ public class PurchaseServiceImpl implements PurchaseService {
     private Product getProduct(ProductName productName) {
         return productRepository.findByProductName(productName)
                 .orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_PRODUCT.getMessage()));
-    }
-
-    private void applyPurchase(Product product, OrderVerification purchaseVerification) {
-        purchaseVerification.apply(product);
-        productRepository.save(purchaseVerification.name(), product);
     }
 }

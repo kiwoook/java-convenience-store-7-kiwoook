@@ -3,15 +3,14 @@ package store.config;
 import store.controller.PurchaseController;
 import store.controller.StoreController;
 import store.domain.OrderInfos;
-import store.domain.OrderVerification;
-import store.repository.ListRepository;
-import store.repository.PromotionRepository;
+import store.repository.OrderVerificationRepository;
 import store.repository.ProductRepository;
+import store.repository.PromotionRepository;
 import store.repository.SingleRepository;
+import store.repository.impl.OrderVerificationRepositoryImpl;
 import store.repository.impl.ProductRepositoryImpl;
 import store.repository.impl.PromotionRepositoryImpl;
 import store.repository.impl.PurchaseInfosRepository;
-import store.repository.impl.PurchaseVerificationRepository;
 import store.service.PurchaseService;
 import store.service.StoreService;
 import store.service.impl.ClearServiceImpl;
@@ -31,10 +30,10 @@ public class StoreConfig {
     private static final ProductRepository productRepository = new ProductRepositoryImpl();
     private static final PromotionRepository PROMOTION_PROMOTION_REPOSITORY = new PromotionRepositoryImpl();
     private static final SingleRepository<OrderInfos> purchaseInfosRepository = new PurchaseInfosRepository();
-    private static final ListRepository<OrderVerification> purchaseVerificationRepository = new PurchaseVerificationRepository();
+    private static final OrderVerificationRepository orderVerificationRepository = new OrderVerificationRepositoryImpl();
 
     private static final store.service.ClearService clearService = new ClearServiceImpl(productRepository,
-            purchaseVerificationRepository, PROMOTION_PROMOTION_REPOSITORY);
+            orderVerificationRepository, PROMOTION_PROMOTION_REPOSITORY);
 
     private static final StoreService storeService = new StoreServiceImpl(productRepository,
             PROMOTION_PROMOTION_REPOSITORY,
@@ -43,7 +42,7 @@ public class StoreConfig {
             outputViewer);
 
     private static final PurchaseService purchaseService = new PurchaseServiceImpl(purchaseInfosRepository,
-            productRepository, purchaseVerificationRepository);
+            productRepository, orderVerificationRepository);
     private static final PurchaseController purchaseController = new PurchaseController(purchaseService, inputViewer,
             outputViewer);
 
