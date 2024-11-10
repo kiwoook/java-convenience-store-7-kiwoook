@@ -81,7 +81,7 @@ public class Receipt {
 
     private String toMembershipDiscount(Confirmation confirmation) {
         return new StringJoiner(TAB)
-                .add("멤버십 할인")
+                .add("멤버십할인")
                 .add(BLANK).add(BLANK)
                 .add("-" + StringUtils.numberFormat(calculateMembershipDiscount(confirmation)))
                 .toString();
