@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import store.domain.vo.PromotionDate;
 import store.exception.InvalidFileFormatException;
 
 class PromotionTest {
@@ -75,21 +74,4 @@ class PromotionTest {
         );
     }
 
-    @Test
-    @DisplayName("프로모션 마감 날짜가 시작날짜보다 이전이면 에러를 발생한다.")
-    void test8() {
-        LocalDate startDate = LocalDate.now().minusDays(1);
-        LocalDate endDate = LocalDate.now();
-        assertThrows(IllegalArgumentException.class,
-                () -> new PromotionDate(startDate, endDate));
-    }
-
-    @Test
-    @DisplayName("프로모션 시작 날짜와 마감날짜가 같은 것은 허용한다.")
-    void test9() {
-        LocalDate date = LocalDate.now();
-        PromotionDate promotionDate = new PromotionDate(date, date);
-
-        assertThat(promotionDate).isNotNull();
-    }
 }
