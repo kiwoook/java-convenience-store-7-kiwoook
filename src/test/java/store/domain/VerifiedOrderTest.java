@@ -126,12 +126,6 @@ class VerifiedOrderTest {
     }
 
     @Test
-    @DisplayName("제품의 할인가를 계산한다.")
-    void test7() {
-
-    }
-
-    @Test
     @DisplayName("모든 제품의 총 개수를 계산한다.")
     void test8() {
         long quantity = 10;

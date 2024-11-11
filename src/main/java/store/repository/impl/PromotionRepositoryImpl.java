@@ -1,5 +1,6 @@
 package store.repository.impl;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -16,12 +17,22 @@ public class PromotionRepositoryImpl implements PromotionRepository {
     }
 
     @Override
-    public Promotion save(String key, Promotion object) {
-        return database.put(key, object);
+    public Promotion save(String key, Promotion promotion, LocalDate currentDate) {
+        if (database.containsKey(key)) {
+            return changeAvailableDate(key, promotion, currentDate);
+        }
+        return database.put(key, promotion);
     }
 
     @Override
     public void clear() {
         this.database.clear();
+    }
+
+    private Promotion changeAvailableDate(String key, Promotion promotion, LocalDate currentDate) {
+        if (promotion.isValidPromotion(currentDate)) {
+            return database.put(key, promotion);
+        }
+        return database.get(key);
     }
 }

@@ -14,8 +14,8 @@ import store.dto.ProductDtos;
 import store.dto.PromotionDto;
 import store.dto.PromotionDtos;
 import store.exception.InvalidFileFormatException;
-import store.repository.PromotionRepository;
 import store.repository.ProductRepository;
+import store.repository.PromotionRepository;
 import store.service.StoreService;
 import store.utils.FileHandler;
 
@@ -39,7 +39,7 @@ public class StoreServiceImpl implements StoreService {
 
         for (PromotionDto promotionDto : promotionDtos.items()) {
             Promotion promotion = promotionDto.toPromotion();
-            promotionRepository.save(promotionDto.name(), promotion);
+            promotionRepository.save(promotionDto.name(), promotion, getCurrentDate());
         }
     }
 
