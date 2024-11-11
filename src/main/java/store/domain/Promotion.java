@@ -44,7 +44,7 @@ public class Promotion {
     }
 
     public boolean isValidPromotion(LocalDate currentDate) {
-        return promotionDate.isValidPromotion(currentDate);
+        return promotionDate.isAvailable(currentDate);
     }
 
     protected long bundleSize() {

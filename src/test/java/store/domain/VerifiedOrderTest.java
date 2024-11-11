@@ -119,7 +119,7 @@ class VerifiedOrderTest {
                 normalQuantity + bundleSize * bundleCount);
 
         // then
-        long result = verifiedOrder.totalDiscountByProduct();
+        long result = verifiedOrder.getTotalDiscountByProduct();
 
         // when
         assertThat(result).isEqualTo(price * bundleCount);

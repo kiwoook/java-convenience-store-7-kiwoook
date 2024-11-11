@@ -92,7 +92,7 @@ public class VerifiedOrder {
         return product.calculateSumPrice(requestQuantity);
     }
 
-    protected long totalDiscountByProduct() {
+    protected long getTotalDiscountByProduct() {
         long giftQuantity = product.calculateGiftQuantity(requestQuantity);
 
         return product.calculateSumPrice(giftQuantity);

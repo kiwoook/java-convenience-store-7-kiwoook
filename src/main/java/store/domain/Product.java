@@ -101,7 +101,7 @@ public class Product {
         StringJoiner spaceBarJoiner = new StringJoiner(SPACE_BAR);
         return spaceBarJoiner.add(DIVIDER)
                 .add(name.value())
-                .add(priceString())
+                .add(toFormatPrice())
                 .add(stock.toPromotionCountString())
                 .add(promotion.toString())
                 .toString();
@@ -111,12 +111,12 @@ public class Product {
         StringJoiner spaceBarJoiner = new StringJoiner(SPACE_BAR);
         return spaceBarJoiner.add(DIVIDER)
                 .add(name.value())
-                .add(priceString())
+                .add(toFormatPrice())
                 .add(stock.toNormalCountString())
                 .toString();
     }
 
-    private String priceString() {
+    private String toFormatPrice() {
         return StringUtils.numberFormat(price) + CURRENCY_UNIT;
     }
 

@@ -14,7 +14,6 @@ public class OutputViewerImpl implements OutputViewer {
     @Override
     public void printResult(Message message) {
         System.out.println(message);
-
     }
 
     @Override

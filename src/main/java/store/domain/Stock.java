@@ -5,6 +5,7 @@ import java.util.Objects;
 public class Stock {
     private static final String COUNT_UNIT = "개";
     private static final String EMPTY_STOCK = "재고 없음";
+    private static final long NOT_PROBLEM_COUNT = 0;
 
     private long normalQuantity;
     private long promotionQuantity;
@@ -77,7 +78,7 @@ public class Stock {
     public long problemQuantity(long requestQuantity, Promotion promotion) {
         validRequestQuantity(requestQuantity);
         if (promotion == null || promotionQuantity == 0) {
-            return 0L;
+            return NOT_PROBLEM_COUNT;
         }
 
         long giftQuantity = promotion.getPromotionGiftQuantity(requestQuantity);

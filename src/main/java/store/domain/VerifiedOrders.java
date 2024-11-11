@@ -31,7 +31,7 @@ public class VerifiedOrders {
 
     public long getTotalDiscount() {
         return items.stream()
-                .mapToLong(VerifiedOrder::totalDiscountByProduct)
+                .mapToLong(VerifiedOrder::getTotalDiscountByProduct)
                 .sum();
     }
 

@@ -14,7 +14,6 @@ public class Receipt {
     private static final String STORE_TITLE = "==============W 편의점================";
     private static final String ATTRIBUTE = "상품명" + TAB.repeat(2) + "수량" + TAB + "금액";
     private static final String GIFT_TITLE = "=============증" + TAB + "정===============";
-
     private static final String DIVIDER = "====================================";
 
     private static final long MAX_PROMOTION_DISCOUNT = 8000;
