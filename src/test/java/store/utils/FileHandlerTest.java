@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import store.domain.vo.ProductName;
 import store.dto.ProductDto;
@@ -74,10 +75,23 @@ class FileHandlerTest {
 
     @ParameterizedTest
     @DisplayName("제품 포맷을 지키지 않으면 에러를 발생한다.")
+    @NullAndEmptySource
     @ValueSource(strings = {",,,,", "제품,1000,10,", ",제품,1000,10,2+1", ",1000,10,2+1", "제품,1000,10,2+1,"})
     void test6(String line) {
         assertThrows(InvalidFileFormatException.class, () -> {
             fileHandler.toDto(line, 4, fileHandler::toProductDto);
+        });
+    }
+
+    @ParameterizedTest
+    @DisplayName("프로덕션 포맷을 지키지 않으면 에러를 발생한다.")
+    @NullAndEmptySource
+    @ValueSource(strings = {",1,1,2024-11-01,2024-11-30", "반짝할인,,1,2024-11-01,2024-11-30", "반짝할인,1,,2024-11-01,2024-11-30",
+            "반짝할인,1,1,,2024-11-30", "반짝할인,1,1,2024-11-01, ", "반짝할인,1,1,2024_11_01,2024_11_30", "반짝할인,1,1,2024/11/01,2024/11/30"
+    })
+    void test7(String line) {
+        assertThrows(InvalidFileFormatException.class, () -> {
+            fileHandler.toDto(line, 5, fileHandler::toPromotionDto);
         });
     }
 
