@@ -53,8 +53,10 @@ public class StoreController {
             String productStatus = products.statusAll();
             PurchaseInfos allPurchaseInfo = getAllPurchaseInfo(productStatus);
             checkProblemQuantity(productStatus, allPurchaseInfo);
-            Confirmation confirmMembership = confirmMembership();
-            printReceipt(confirmMembership);
+            printReceipt(confirmMembership());
+
+            verifiedOrders.apply();
+            verifiedOrders.clear();
 
             retry = inputViewer.retryPurchase();
         } while (retry.equals(Confirmation.YES));
@@ -99,10 +101,10 @@ public class StoreController {
             if (confirmDto.problemQuantity() == 0) {
                 verifiedOrders.addProduct(product, confirmDto.requestQuantity());
             }
-            if (confirmDto.problemQuantity() < 0) {
+            if (confirmDto.problemQuantity() > 0) {
                 checkGiftQuantity(confirmDto);
             }
-            if (confirmDto.problemQuantity() > 0) {
+            if (confirmDto.problemQuantity() < 0) {
                 checkOriginalPriceQuantity(confirmDto);
             }
         }
@@ -139,7 +141,7 @@ public class StoreController {
             Promotion promotion = null;
             if (!productDto.promotionName().equals(NULL)) {
                 promotion = promotions.get(productDto.promotionName());
-                if (promotion == null){
+                if (promotion == null) {
                     continue;
                 }
             }

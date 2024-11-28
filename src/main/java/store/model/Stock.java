@@ -85,6 +85,8 @@ public class Stock {
     }
 
     public void apply(long requestQuantity) {
+        validRequestQuantity(requestQuantity);
+
         if (promotionQuantity < requestQuantity) {
             promotionQuantity = 0;
             normalQuantity = normalQuantity - (requestQuantity - promotionQuantity);

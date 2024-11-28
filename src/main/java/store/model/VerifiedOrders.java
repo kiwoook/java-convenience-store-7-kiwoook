@@ -88,5 +88,8 @@ public class VerifiedOrders {
         items.forEach(VerifiedOrder::applyStock);
     }
 
+    public void clear() {
+        items.clear();
+    }
 
 }
